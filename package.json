@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
-    "build-css": "tailwindcss -i ./public/input.css -o ./public/output.css --watch"
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
