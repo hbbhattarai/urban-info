@@ -5,10 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Building Details</title>
-
-  <!-- Raleway Font -->
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
-
   <style>
     body {
       font-family: 'Raleway', sans-serif;
@@ -21,6 +18,42 @@
       text-align: center;
       font-weight: 600;
       margin-bottom: 30px;
+    }
+
+    .building-list {
+      max-width: 800px;
+      margin: auto;
+      margin-bottom: 40px;
+    }
+
+    .building-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .photo-preview img {
+      height: 100px;
+      margin-right: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    .actions {
+      margin-top: 10px;
+    }
+
+    .actions a {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 8px 12px;
+      text-decoration: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 4px;
+      font-size: 14px;
     }
 
     form {
@@ -70,84 +103,69 @@
     button:hover {
       background-color: #45a049;
     }
-
-    .photo-preview {
-      margin-top: 15px;
-    }
-
-    .photo-preview img {
-      height: 100px;
-      margin-right: 10px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-    }
-
-    @media (max-width: 600px) {
-      form {
-        padding: 20px;
-      }
-    }
   </style>
 </head>
 
 <body>
-  <h1>Building Details for Plot ID: <%= plotId %></h1>
+  <h1>Buildings on Plot ID: <%= plotId %></h1>
 
-  <% if (building) { %>
-  <div style="max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px;">
-    <h2 style="font-weight: 600;">Existing Building</h2>
-    <p><strong>Name:</strong> <%= building.name %></p>
-    <p><strong>Owner CID:</strong> <%= building.ownerCid %></p>
-    <p><strong>Year Built:</strong> <%= building.yearBuilt %></p>
-    <p><strong>Storeys:</strong> <%= building.storeys %></p>
-    <p><strong>Structure Type:</strong> <%= building.structureType %></p>
-    <p><strong>Retrofit Ready:</strong> <%= building.retrofitReady ? 'Yes' : 'No' %></p>
+  <div class="building-list">
+    <% if (building?.length) { %>
+      <% building.forEach((bld, idx) => { %>
+        <div class="building-card">
+          <h2>Building <%= idx + 1 %>: <%= bld.name %></h2>
+          <p><strong>Owner CID:</strong> <%= bld.ownerCid %></p>
+          <p><strong>Year Built:</strong> <%= bld.yearBuilt %></p>
+          <p><strong>Storeys:</strong> <%= bld.storeys %></p>
+          <p><strong>Structure Type:</strong> <%= bld.structureType %></p>
+          <p><strong>Retrofit Ready:</strong> <%= bld.retrofitReady ? 'Yes' : 'No' %></p>
 
-    <% if (building.facadePhotos?.length) { %>
-      <div class="photo-preview">
-        <% building.facadePhotos.forEach(photo => { %>
-          <img src="<%= photo %>" alt="Facade Photo">
-        <% }) %>
-      </div>
+          <% if (bld.facadePhotos?.length) { %>
+            <div class="photo-preview">
+              <% bld.facadePhotos.forEach(photo => { %>
+                <img src="<%= photo %>" alt="Facade Photo">
+              <% }) %>
+            </div>
+          <% } %>
+
+          <div class="actions">
+            <a href="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/building/<%= bld.plotId %>/edit">Edit</a>
+            <a href="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/building/<%= bld.plotId %>/units">View/Add Units</a>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p style="text-align:center;">No buildings added yet.</p>
     <% } %>
   </div>
-<% } %>
 
+  <form action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/building/<%= plotId %>/add" method="POST" enctype="multipart/form-data">
+    <h2 style="text-align:center;">Add New Building</h2>
 
-  <form action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/building/<%= plotId %>" method="POST" enctype="multipart/form-data">
     <label for="name">Building Name:</label>
-    <input type="text" id="name" name="name" value="<%= building?.name || '' %>" required>
+    <input type="text" id="name" name="name" required>
 
     <label for="ownerCid">Owner CID:</label>
-    <input type="text" id="ownerCid" name="ownerCid" value="<%= building?.ownerCid || '' %>" required>
+    <input type="text" id="ownerCid" name="ownerCid" required>
 
     <label for="yearBuilt">Year Built:</label>
-    <input type="number" id="yearBuilt" name="yearBuilt" value="<%= building?.yearBuilt || '' %>" required>
+    <input type="number" id="yearBuilt" name="yearBuilt" required>
 
     <label for="storeys">Number of Storeys:</label>
-    <input type="number" id="storeys" name="storeys" value="<%= building?.storeys || '' %>" required>
+    <input type="number" id="storeys" name="storeys" required>
 
     <label for="structureType">Structure Type:</label>
-    <input type="text" id="structureType" name="structureType" value="<%= building?.structureType || '' %>" required>
+    <input type="text" id="structureType" name="structureType" required>
 
     <label>
-      <input type="checkbox" id="retrofitReady" name="retrofitReady" <%= building?.retrofitReady ? 'checked' : '' %>>
+      <input type="checkbox" id="retrofitReady" name="retrofitReady">
       Retrofit Ready
     </label>
 
     <label for="facadePhotos">Facade Photos:</label>
     <input type="file" id="facadePhotos" name="facadePhotos" accept="image/*" multiple>
 
-    <% if (building?.facadePhotos?.length) { %>
-      <div class="photo-preview">
-        <% building.facadePhotos.forEach(photo => { %>
-          <img src="<%= photo %>" alt="Facade Photo">
-        <% }) %>
-      </div>
-    <% } %>
-
-    <button type="submit">Submit</button>
+    <button type="submit">Add Building</button>
   </form>
 </body>
-
 </html>

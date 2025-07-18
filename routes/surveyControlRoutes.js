@@ -33,10 +33,30 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Parcel type selection page
-router.get('/:surveyId/survey/parcel/:featureId', (req, res) => {
+router.get('/:surveyId/survey/parcel/:featureId', async (req, res) => {
   const { featureId } = req.params;
   const { surveyId } = req.params;
-  res.render('surveyor/parcelTypeSelection', { featureId, surveyId });
+
+  try {
+    let parcel = await Parcel.findOne({ where: { featureId } });
+    if (parcel) {
+      if (parcel.type === 'park') {
+        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/park`);
+      } else if (parcel.type === 'plot') {
+        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/plot`);
+      } else if (parcel.type === 'street') {
+        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/street`);
+      }
+    } else {
+      res.render('surveyor/parcelTypeSelection', { featureId, surveyId });
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+
+
 });
 
 
@@ -50,13 +70,11 @@ router.post('/:surveyId/survey/parcel/:featureId', async (req, res) => {
   try {
     let parcel = await Parcel.findOne({ where: { featureId } });
     if (parcel) {
-      parcel.type = type;
-      await parcel.save();
-      if (type === 'park') {
+      if (parcel.type === 'park') {
         res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/park`);
-      } else if (type === 'plot') {
+      } else if (parcel.type === 'plot') {
         res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/plot`);
-      } else if (type === 'street') {
+      } else if (parcel.type === 'street') {
         res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/street`);
       }
     } else {
@@ -206,48 +224,51 @@ router.get('/:surveyId/survey/parcel/:parcelId/plot', async (req, res) => {
 });
 
 router.post('/:surveyId/survey/parcel/:parcelId/plot',
-  upload.array('facadePhotos', 10), // Match the `name="photos"` in form
+  upload.array('facadePhotos', 10),
   async (req, res) => {
     const { parcelId, surveyId } = req.params;
-    const { status } = req.body;
-    const {
-      isConstructed
-    } = req.body;
+    const { status, isConstructed } = req.body;
 
     try {
       let plot = await Plot.findOne({ where: { parcelId } });
       let parcel = await Parcel.findOne({ where: { id: parcelId } });
       let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
 
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
+
       if (shapefile) {
-        shapefile.status = status;
+        shapefile.status = status === 'on';
         await shapefile.save();
       }
 
-      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
-
       if (plot) {
         plot.isConstructed = isConstructed === 'on';
-        if (photoUrls.length > 0) plot.photos = photoUrls;
+        plot.photos = photoUrls;
+        plot.status = status === 'on';
         await plot.save();
       } else {
-        await Plot.create({
+        plot = await Plot.create({
           parcelId,
           isConstructed: isConstructed === 'on',
-          photos: photoUrls
+          photos: photoUrls,
+          status: status === 'on'
         });
       }
+
       if (isConstructed === 'on') {
+        // Redirect to the buildings page using plot.id
         res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/building/${plot.id}`);
       } else {
         res.redirect(`/editor/surveys/view/${surveyId}`);
       }
+
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');
     }
   }
 );
+
 
 // Building Routes
 
@@ -256,7 +277,7 @@ router.get('/:surveyId/survey/parcel/:parcelId/building/:plotId', async (req, re
   const { surveyId, parcelId, plotId } = req.params;
 
   try {
-    const building = await Building.findOne({ where: { plotId } });
+    const building = await Building.findAll({ where: { plotId } });
     res.render('surveyor/buildingDetails', { surveyId, parcelId, plotId, building });
   } catch (error) {
     console.error(error);
@@ -264,9 +285,8 @@ router.get('/:surveyId/survey/parcel/:parcelId/building/:plotId', async (req, re
   }
 });
 
-
-router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId',
-  upload.array('facadePhotos', 10), // should match name="facadePhotos" in form
+router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
+  upload.array('facadePhotos', 10),
   async (req, res) => {
     const { surveyId, parcelId, plotId } = req.params;
     const {
@@ -281,45 +301,67 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId',
     try {
       const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
-      let building = await Building.findOne({ where: { plotId } });
-
-      if (building) {
-        // Update existing building
-        Object.assign(building, {
-          name,
-          ownerCid,
-          yearBuilt,
-          storeys,
-          structureType,
-          retrofitReady: retrofitReady === 'on',
-        });
-
-        if (photoUrls.length > 0) {
-          building.facadePhotos = photoUrls;
-        }
-
-        await building.save();
-      } else {
-        // Create new building
-        await Building.create({
-          plotId,
-          name,
-          ownerCid,
-          yearBuilt,
-          storeys,
-          structureType,
-          retrofitReady: retrofitReady === 'on',
-          facadePhotos: photoUrls,
-        });
-      }
+      await Building.create({
+        plotId,
+        name,
+        ownerCid,
+        yearBuilt,
+        storeys,
+        structureType,
+        retrofitReady: retrofitReady === 'on',
+        facadePhotos: photoUrls
+      });
 
       res.redirect(`/editor/surveys/view/${surveyId}`);
     } catch (error) {
       console.error(error);
-      res.status(500).send('Internal Server Error');
+      res.status(500).send('Failed to add building');
     }
   }
 );
+
+
+router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/edit/:buildingId',
+  upload.array('facadePhotos', 10),
+  async (req, res) => {
+    const { surveyId, parcelId, plotId, buildingId } = req.params;
+    const {
+      name,
+      ownerCid,
+      yearBuilt,
+      storeys,
+      structureType,
+      retrofitReady
+    } = req.body;
+
+    try {
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
+
+      const building = await Building.findByPk(buildingId);
+      if (!building) return res.status(404).send('Building not found');
+
+      Object.assign(building, {
+        name,
+        ownerCid,
+        yearBuilt,
+        storeys,
+        structureType,
+        retrofitReady: retrofitReady === 'on',
+      });
+
+      if (photoUrls.length > 0) {
+        building.facadePhotos = photoUrls;
+      }
+
+      await building.save();
+      res.redirect(`/editor/surveys/view/${surveyId}`);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Failed to update building');
+    }
+  }
+);
+
 
 
 

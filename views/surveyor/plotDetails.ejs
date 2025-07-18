@@ -20,13 +20,14 @@
     h1 {
       text-align: center;
       font-weight: 600;
+      margin-bottom: 30px;
     }
 
     form {
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
-      background: white;
-      padding: 20px;
+      background: #fff;
+      padding: 25px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
@@ -42,10 +43,15 @@
       margin-top: 5px;
     }
 
+    input[type="checkbox"] {
+      margin-right: 8px;
+      transform: scale(1.2);
+    }
+
     button {
-      margin-top: 20px;
+      margin-top: 25px;
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background-color: #4CAF50;
       color: white;
       border: none;
@@ -58,32 +64,49 @@
       background-color: #45a049;
     }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
+    .photo-preview {
+      margin-top: 15px;
+    }
 
+    .photo-preview img {
+      height: 100px;
+      margin-right: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    @media (max-width: 600px) {
       form {
-        padding: 15px;
+        padding: 20px;
       }
     }
   </style>
 </head>
 
 <body>
-  <h1>Plot Details for Parcel ID: <%= parcelId %>
-  </h1>
-  <form action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot" method="POST"
-    enctype="multipart/form-data">
+  <h1>Plot Details for Parcel ID: <%= parcelId %></h1>
+
+  <form action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="parcelId" value="<%= parcelId %>">
+
     <label>
-      <input type="checkbox" id="isConstructed" name="isConstructed">
+      <input type="checkbox" id="isConstructed" name="isConstructed" <%= plot?.isConstructed ? 'checked' : '' %> >
       Is Constructed
     </label>
+
     <label for="facadePhotos">Facade Photos:</label>
     <input type="file" id="facadePhotos" name="facadePhotos" accept="image/*" multiple>
+
+    <% if (plot?.photos?.length) { %>
+      <div class="photo-preview">
+        <% plot.photos.forEach(photo => { %>
+          <img src="<%= photo %>" alt="Plot Photo">
+        <% }) %>
+      </div>
+    <% } %>
+
     <label>
-      <input type="checkbox" id="status" name="status">
+      <input type="checkbox" id="status" name="status" <%= plot?.status ? 'checked' : '' %> >
       Is Survey Completed
     </label>
 
