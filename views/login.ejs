@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Montserrat:wght@600&family=Lato:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(to right, #141e30, #243b55);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-container h1 {
+      margin-bottom: 24px;
+      color: #333;
+      font-size: 2rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #444;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+
+    .error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4a90e2;
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Lato', sans-serif;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-button:hover {
+      background-color: #357abd;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 30px 25px;
+      }
+
+      .login-container h1 {
+        font-size: 1.6rem;
+      }
+
+      .form-group input {
+        font-size: 0.95rem;
+      }
+
+      .login-button {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .login-container {
+        padding: 25px 20px;
+      }
+
+      .login-container h1 {
+        font-size: 1.4rem;
+      }
+
+      .form-group label,
+      .form-group input,
+      .login-button {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Welcome Back</h1>
+    <% if (error) { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input name="username" id="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required />
+      </div>
+      <button type="submit" class="login-button">Login</button>
+    </form>
+  </div>
+</body>
+</html>

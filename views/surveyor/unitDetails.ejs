@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit Details</title>
+</head>
+<body>
+  <h1>Unit Details for Building ID: <%= buildingId %> and Unit ID: <%= unitId %></h1>
+  <form action="/editor/surveys/survey/building/<%= buildingId %>/unit/<%= unitId %>" method="POST" enctype="multipart/form-data">
+    <label for="useType">Use Type:</label>
+    <input type="text" id="useType" name="useType" required><br>
+
+    <label for="rent">Rent:</label>
+    <input type="number" id="rent" name="rent" required><br>
+
+    <label for="tenantName">Tenant Name:</label>
+    <input type="text" id="tenantName" name="tenantName"><br>
+
+    <label for="tenantOrigin">Tenant Origin:</label>
+    <input type="text" id="tenantOrigin" name="tenantOrigin"><br>
+
+    <label for="tenancyYears">Tenancy Years:</label>
+    <input type="number" id="tenancyYears" name="tenancyYears"><br>
+
+    <label for="roomsCount">Rooms Count:</label>
+    <input type="number" id="roomsCount" name="roomsCount" required><br>
+
+    <label for="interiorPhotos">Interior Photos:</label>
+    <input type="file" id="interiorPhotos" name="interiorPhotos" accept="image/*"><br>
+
+    <label for="signboardPhotos">Signboard Photos:</label>
+    <input type="file" id="signboardPhotos" name="signboardPhotos" accept="image/*"><br>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

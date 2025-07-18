@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Survey List</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* You can reuse the same styles as the user list for consistency */
+    /* ... (same CSS from your user list view, adjusting colors or titles if you want) ... */
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #243b55;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #a0c4ff;
+    }
+
+    .logout-btn {
+      background-color: #4a90e2;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      font-family: 'Montserrat', sans-serif;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #357abd;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      nav {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        background-color: #243b55;
+        padding: 10px 0;
+        margin-top: 10px;
+      }
+
+      nav.active {
+        display: flex;
+      }
+
+      nav a,
+      .logout-btn {
+        padding: 10px 20px;
+        width: 100%;
+        text-align: left;
+      }
+    }
+
+    main {
+      flex: 1;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+      width: 100%;
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #243b55;
+    }
+
+    .add-survey-btn {
+      display: inline-block;
+      background-color: #4a90e2;
+      color: #fff;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 30px;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-survey-btn:hover {
+      background-color: #357abd;
+    }
+
+    .survey-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .survey-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .survey-info {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .survey-info strong {
+      font-weight: bold;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .survey-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .survey-actions a,
+    .survey-actions button {
+      background-color: #4a90e2;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-family: 'Roboto', sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .survey-actions a:hover,
+    .survey-actions button:hover {
+      background-color: #357abd;
+    }
+
+    .survey-actions form {
+      display: inline;
+    }
+
+    @media (max-width: 600px) {
+      .survey-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .survey-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .survey-actions a,
+      .survey-actions button {
+        width: auto;
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Editor Dashboard</div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <nav id="navbar">
+      <a href="/logout" class="logout-btn">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>All Surveys</h1>
+
+    <div class="survey-list">
+      <% surveys.forEach(survey=> { %>
+        <div class="survey-card">
+          <div class="survey-info">
+            <strong>
+              <%= survey.name %>
+            </strong><br />
+            <small>
+              <%= survey.description || 'No description' %>
+            </small>
+          </div>
+          <div class="survey-actions">
+            <a href="/editor/surveys/view/<%= survey.id %>">Proceed To Survey </a>
+          </div>
+        </div>
+        <% }) %>
+    </div>
+  </main>
+
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('navbar');
+      nav.classList.toggle('active');
+    }
+  </script>
+</body>
+
+</html>

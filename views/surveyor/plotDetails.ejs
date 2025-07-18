@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plot Details</title>
+
+  <!-- Raleway Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 600;
+    }
+
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input[type="file"],
+    input[type="checkbox"] {
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      form {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Plot Details for Parcel ID: <%= parcelId %>
+  </h1>
+  <form action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot" method="POST"
+    enctype="multipart/form-data">
+    <input type="hidden" name="parcelId" value="<%= parcelId %>">
+    <label>
+      <input type="checkbox" id="isConstructed" name="isConstructed">
+      Is Constructed
+    </label>
+    <label for="facadePhotos">Facade Photos:</label>
+    <input type="file" id="facadePhotos" name="facadePhotos" accept="image/*" multiple>
+    <label>
+      <input type="checkbox" id="status" name="status">
+      Is Survey Completed
+    </label>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+
+</html>

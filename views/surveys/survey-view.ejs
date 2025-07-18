@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Survey Map - <%= survey.name %>
+    </title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+
+        header {
+            padding: 1em;
+            background: #243b55;
+            color: white;
+            text-align: center;
+        }
+
+        .back-link {
+            display: block;
+            margin: 10px 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .info {
+            padding: 10px 20px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Survey: <%= survey.name %>
+        </h1>
+    </header>
+
+    <div id="map"></div>
+
+    <a href="/admin/surveys" class="back-link">← Back to Surveys</a>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        const map = L.map('map').setView([20, 0], 2); // Initial center
+
+        // Satellite basemap (Esri)
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles © Esri',
+            maxZoom: 18
+        }).addTo(map);
+
+        // Fetch and add GeoJSON
+        fetch('/admin/surveys/shapefile/get-data/<%= survey.id %>')
+            .then(res => res.json())
+            .then(data => {
+                const layer = L.geoJSON(data, {
+                    style: (feature) => {
+
+                        return {
+                            color: 'black', // border color
+                            weight: 1,
+                            fillColor: feature.properties.status == true ? 'green' : 'red',
+                            fillOpacity: 0.6
+                        };
+                    },
+                    onEachFeature: (feature, layer) => {
+                        console.log(feature.properties.status);
+                        layer.on('click', () => {
+                            const featureId = feature.properties.id;
+                            window.location.href = `/editor/surveys/<%= survey.id %>/survey/parcel/${featureId}`;
+                        });
+                    }
+                }).addTo(map);
+
+                map.fitBounds(layer.getBounds());
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Residential Details</title>
+</head>
+<body>
+  <h1>Residential Details for Unit ID: <%= unitId %></h1>
+  <form action="/editor/surveys/survey/unit/<%= unitId %>/residential" method="POST" enctype="multipart/form-data">
+    <label for="residentsCount">Residents Count:</label>
+    <input type="number" id="residentsCount" name="residentsCount" required><br>
+
+    <label for="childrenCount">Children Count:</label>
+    <input type="number" id="childrenCount" name="childrenCount" required><br>
+
+    <label for="income">Income:</label>
+    <input type="number" id="income" name="income" required><br>
+
+    <label for="residentialPhotos">Residential Photos:</label>
+    <input type="file" id="residentialPhotos" name="residentialPhotos" accept="image/*"><br>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
