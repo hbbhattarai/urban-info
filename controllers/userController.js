@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
 exports.getAllUsers = async (req, res) => {
@@ -10,8 +11,12 @@ exports.showAddForm = (req, res) => {
 };
 
 exports.addUser = async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, role } = req.body;
+  const newpassword = req.body.newpassword;
   try {
+    const saltRounds = 10;
+     const password = await bcrypt.hash(newpassword,saltRounds);
+     console.log(password)
     await User.create({ username, password, role });
     res.redirect('/admin/users');
   } catch (err) {

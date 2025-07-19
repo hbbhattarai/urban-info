@@ -90,23 +90,17 @@
     <input type="hidden" name="parcelId" value="<%= parcelId %>">
 
     <label>
-      <input type="checkbox" id="isConstructed" name="isConstructed" <%= plot?.isConstructed ? 'checked' : '' %> >
+      <input type="checkbox" id="isConstructed" name="isConstructed">
       Is Constructed
     </label>
 
     <label for="facadePhotos">Facade Photos:</label>
     <input type="file" id="facadePhotos" name="facadePhotos" accept="image/*" multiple>
 
-    <% if (plot?.photos?.length) { %>
-      <div class="photo-preview">
-        <% plot.photos.forEach(photo => { %>
-          <img src="<%= photo %>" alt="Plot Photo">
-        <% }) %>
-      </div>
-    <% } %>
+ 
 
     <label>
-      <input type="checkbox" id="status" name="status" <%= plot?.status ? 'checked' : '' %> >
+      <input type="checkbox" id="status" name="status" >
       Is Survey Completed
     </label>
 

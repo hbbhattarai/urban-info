@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Details</title>
+    <!-- Link to Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        h2, h3, h4 {
+            color: #333;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin: 10px;
+        }
+
+        h3 {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        p {
+            font-size: 1em;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #007bff;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            margin: 5px;
+        }
+
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .image-gallery p {
+            margin: 0;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.6em;
+            }
+
+            h3 {
+                font-size: 1.2em;
+            }
+
+            p {
+                font-size: 0.9em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .image-gallery {
+                justify-content: center;
+            }
+
+            .image-gallery img {
+                max-width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.4em;
+            }
+
+            h3 {
+                font-size: 1.1em;
+            }
+
+            p {
+                font-size: 0.8em;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .image-gallery img {
+                max-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Unit Details</h2>
+        <h3>Use Type: <%= unit.useType %></h3>
+        <p>Floor: <%= unit.floor %></p>
+        <p>Area: <%= unit.area %> sqm</p>
+        <p>Usage: <%= unit.usage %></p>
+        <p>Rent: <%= unit.rent %></p>
+        <p>Tenant Name: <%= unit.tenantName || 'N/A' %></p>
+        <p>Tenant Origin: <%= unit.tenantOrigin || 'N/A' %></p>
+        <p>Tenancy Years: <%= unit.tenancyYears || 'N/A' %></p>
+        <p>Rooms Count: <%= unit.roomsCount || 'N/A' %></p>
+        <p>Family Size: <%= unit.familySize || 'N/A' %></p>
+        <p>Male Population: <%= unit.malePopulation || 'N/A' %></p>
+        <p>Female Population: <%= unit.femalePopulation || 'N/A' %></p>
+
+        <% if (unit.useType === 'Residential' || unit.useType === 'Both') { %>
+            <p>Bedrooms: <%= unit.bedrooms || 'N/A' %></p>
+            <p>Bathrooms: <%= unit.bathrooms || 'N/A' %></p>
+        <% } %>
+
+        <% if (unit.useType === 'Commercial' || unit.useType === 'Both') { %>
+            <p>Business Name: <%= unit.businessName || 'N/A' %></p>
+            <p>License Number: <%= unit.licenseNumber || 'N/A' %></p>
+        <% } %>
+
+        <div class="image-gallery">
+            <h4>Interior Photos</h4>
+            <% if (unit.interiorPhotos && unit.interiorPhotos.length) { %>
+                <% unit.interiorPhotos.forEach(photo => { %>
+                    <img src="<%= photo %>" alt="Interior Photo">
+                <% }) %>
+            <% } else { %>
+                <p>No interior photos available</p>
+            <% } %>
+        </div>
+
+        <div class="image-gallery">
+            <h4>Signboard Photos</h4>
+            <% if (unit.signboardPhotos && unit.signboardPhotos.length) { %>
+                <% unit.signboardPhotos.forEach(photo => { %>
+                    <img src="<%= photo %>" alt="Signboard Photo">
+                <% }) %>
+            <% } else { %>
+                <p>No signboard photos available</p>
+            <% } %>
+        </div>
+
+       <a href="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot/<%= plotId %>/building/<%= buildingId %>/unit/<%= unit.id %>/edit"
+                                    style="text-decoration: none; color: #4CAF50; font-weight: 600;">Edit Unit</a>
+    </div>
+</body>
+</html>

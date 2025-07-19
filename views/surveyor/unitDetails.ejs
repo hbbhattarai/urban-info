@@ -1,38 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unit Details</title>
+    <meta charset="UTF-8">
+    <title>Units - Building <%= buildingId %>
+    </title>
+
+    <!-- Google Fonts: Raleway -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Raleway', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h2,
+        h3 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .unit-list,
+        .unit-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        @media (min-width: 768px) {
+            .unit-list {
+                flex: 1 1 45%;
+            }
+
+            .unit-form {
+                flex: 1 1 45%;
+            }
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        input[type="file"] {
+            padding: 3px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .photo-preview img {
+            height: 100px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .actions a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 12px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .actions a:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
+
 <body>
-  <h1>Unit Details for Building ID: <%= buildingId %> and Unit ID: <%= unitId %></h1>
-  <form action="/editor/surveys/survey/building/<%= buildingId %>/unit/<%= unitId %>" method="POST" enctype="multipart/form-data">
-    <label for="useType">Use Type:</label>
-    <input type="text" id="useType" name="useType" required><br>
 
-    <label for="rent">Rent:</label>
-    <input type="number" id="rent" name="rent" required><br>
+    <h2>Units for Building <%= buildingId %>
+    </h2>
 
-    <label for="tenantName">Tenant Name:</label>
-    <input type="text" id="tenantName" name="tenantName"><br>
+    <div class="container">
 
-    <label for="tenantOrigin">Tenant Origin:</label>
-    <input type="text" id="tenantOrigin" name="tenantOrigin"><br>
+        <!-- Unit List -->
+        <div class="unit-list">
+            <h3>Existing Units</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">Type</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">Tenant</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">Edit</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #ddd;">View</th>
 
-    <label for="tenancyYears">Tenancy Years:</label>
-    <input type="number" id="tenancyYears" name="tenancyYears"><br>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% units.forEach(unit=> { %>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #f1f1f1;">
+                                <%= unit.useType %>
+                            </td>
+                            <td style="padding: 10px; border-bottom: 1px solid #f1f1f1;">
+                                <%= unit.tenantName || 'N/A' %>
+                            </td>
+                            <td style="padding: 10px; border-bottom: 1px solid #f1f1f1;">
+                                <a href="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot/<%= plotId %>/building/<%= buildingId %>/unit/<%= unit.id %>/edit"
+                                    style="text-decoration: none; color: #4CAF50; font-weight: 600;">Edit</a>
 
-    <label for="roomsCount">Rooms Count:</label>
-    <input type="number" id="roomsCount" name="roomsCount" required><br>
+                            </td>
+                            <td style="padding: 10px; border-bottom: 1px solid #f1f1f1;">
+                                <a href="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot/<%= plotId %>/building/<%= buildingId %>/unit/<%= unit.id %>/view"
+                                    style="text-decoration: none; color: #4CAF50; font-weight: 600;">View</a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
 
-    <label for="interiorPhotos">Interior Photos:</label>
-    <input type="file" id="interiorPhotos" name="interiorPhotos" accept="image/*"><br>
+        </div>
 
-    <label for="signboardPhotos">Signboard Photos:</label>
-    <input type="file" id="signboardPhotos" name="signboardPhotos" accept="image/*"><br>
+        <!-- Unit Form -->
+        <div class="unit-form">
+            <h3>
+                <%= editUnit ? "Edit Unit" : "Add New Unit" %>
+            </h3>
 
-    <button type="submit">Submit</button>
-  </form>
+            <form method="POST" enctype="multipart/form-data"
+                action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot/<%= plotId %>/building/<%= buildingId %>/unit/save">
+                <% if (editUnit) { %>
+                    <input type="hidden" name="unitId" value="<%= editUnit.id %>" />
+                    <% } %>
+
+                        <label>Use Type:</label>
+                        <select name="useType" id="useType">
+                            <option value="Residential" <%=editUnit?.useType==='Residential' ? 'selected' : '' %>
+                                >Residential</option>
+                            <option value="Commercial" <%=editUnit?.useType==='Commercial' ? 'selected' : '' %>
+                                >Commercial</option>
+                            <option value="Both" <%=editUnit?.useType==='Both' ? 'selected' : '' %>>Both</option>
+                        </select>
+
+                        <label>Floor:</label>
+                        <input name="floor" value="<%= editUnit?.floor || '' %>" />
+
+                        <label>Area:</label>
+                        <input name="area" value="<%= editUnit?.area || '' %>" />
+
+                        <label>Usage:</label>
+                        <input name="usage" value="<%= editUnit?.usage || '' %>" />
+
+                        <label>Rent:</label>
+                        <input name="rent" value="<%= editUnit?.rent || '' %>" />
+
+                        <label>Tenant Name:</label>
+                        <input name="tenantName" value="<%= editUnit?.tenantName || '' %>" />
+
+                        <label>Tenant Origin:</label>
+                        <input name="tenantOrigin" value="<%= editUnit?.tenantOrigin || '' %>" />
+
+                        <label>Tenancy Years:</label>
+                        <input name="tenancyYears" value="<%= editUnit?.tenancyYears || '' %>" />
+
+                        <label>Rooms Count:</label>
+                        <input name="roomsCount" value="<%= editUnit?.roomsCount || '' %>" />
+
+                        <label>Family Size:</label>
+                        <input name="familySize" value="<%= editUnit?.familySize || '' %>" />
+
+                        <label>Male Population:</label>
+                        <input name="malePopulation" value="<%= editUnit?.malePopulation || '' %>" />
+
+                        <label>Female Population:</label>
+                        <input name="femalePopulation" value="<%= editUnit?.femalePopulation || '' %>" />
+
+                        <div id="residentialFields">
+                            <label>Bedrooms:</label>
+                            <input name="bedrooms" value="<%= editUnit?.bedrooms || '' %>" />
+
+                            <label>Bathrooms:</label>
+                            <input name="bathrooms" value="<%= editUnit?.bathrooms || '' %>" />
+                        </div>
+
+                        <div id="commercialFields">
+                            <label>Business Name:</label>
+                            <input name="businessName" value="<%= editUnit?.businessName || '' %>" />
+
+                            <label>License Number:</label>
+                            <input name="licenseNumber" value="<%= editUnit?.licenseNumber || '' %>" />
+                        </div>
+
+                        <label>Interior Photos:</label>
+                        <% if (editUnit.interiorPhotos?.length) { %>
+                            <div class="photo-preview">
+                                <% editUnit.interiorPhotos?.forEach(photo=> { %>
+                                    <img src="<%= photo %>" alt="Facade Photo">
+                                    <% }) %>
+                            </div>
+                            <% } %>
+                                <input type="file" name="interiorPhotos" multiple />
+
+                                <label>Signboard Photos:</label>
+
+                                <% if (editUnit.signboardPhotos?.length) { %>
+                                    <div class="photo-preview">
+                                        <% editUnit.signboardPhotos?.forEach(photo=> { %>
+                                            <img src="<%= photo %>" alt="Facade Photo">
+                                            <% }) %>
+                                    </div>
+                                    <% } %>
+                                        <input type="file" name="signboardPhotos" multiple />
+
+                                        <button type="submit">
+                                            <%= editUnit ? "Update" : "Add" %> Unit
+                                        </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const useTypeSelect = document.getElementById('useType');
+        const residentialFields = document.getElementById('residentialFields');
+        const commercialFields = document.getElementById('commercialFields');
+
+        function toggleFields() {
+            const type = useTypeSelect.value;
+            residentialFields.style.display = (type === 'Residential' || type === 'Both') ? 'block' : 'none';
+            commercialFields.style.display = (type === 'Commercial' || type === 'Both') ? 'block' : 'none';
+        }
+
+        useTypeSelect.addEventListener('change', toggleFields);
+        window.addEventListener('DOMContentLoaded', toggleFields);
+    </script>
+
 </body>
+
 </html>

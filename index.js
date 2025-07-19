@@ -3,7 +3,6 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-// Import sequelize and models from models/index.js
 const { sequelize, Survey } = require('./models');
 
 /// Routes Identififer
@@ -51,7 +50,7 @@ function roleMiddleware(allowedRoles) {
 }
 
 // Static files (css, js)
-app.use(express.static(path.join(__dirname, 'public')));
+ app.use('/uploads', express.static('uploads'));
 
 // Auth Routes
 app.use('/', authRoutes);

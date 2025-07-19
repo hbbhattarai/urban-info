@@ -6,7 +6,7 @@ const Park = sequelize.define('Park', {
   name: { type: DataTypes.STRING },
   area: { type: DataTypes.FLOAT },
   facilities: { type: DataTypes.TEXT },
-  photo: { type: DataTypes.STRING },
+  photos:  { type: DataTypes.ARRAY(DataTypes.STRING) },
 });
 
 // Remove associate here; define all associations in index.js
