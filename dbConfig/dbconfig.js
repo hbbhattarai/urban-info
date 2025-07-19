@@ -1,3 +1,4 @@
+require('pg');
 require("dotenv").config();
 
 const { Pool } = require("pg");

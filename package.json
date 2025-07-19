@@ -4,8 +4,10 @@
   "description": "Backend API for Build Vision using Express and Sequelize.",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm install pg",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "vercel build"
   },
   "keywords": [],
   "author": "",
