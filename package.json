@@ -4,8 +4,8 @@
   "description": "Backend API for Build Vision using Express and Sequelize.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "build": "echo \"No build step required\""
   },
   "keywords": [],
