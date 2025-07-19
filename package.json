@@ -1,11 +1,12 @@
 {
   "name": "build-vision",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend API for Build Vision using Express and Sequelize.",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build": "echo \"No build step required\""
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "pg-hstore": "^2.3.4",
     "proj4": "^2.19.6",
     "sequelize": "^6.37.7",
+    "serverless-http": "^3.2.0",
     "shapefile": "^0.6.6"
   },
   "devDependencies": {
