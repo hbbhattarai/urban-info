@@ -239,7 +239,7 @@
                         </div>
 
                         <label>Interior Photos:</label>
-                        <% if (editUnit.interiorPhotos?.length) { %>
+                        <% if (editUnit.interiorPhotos?.length > 0) { %>
                             <div class="photo-preview">
                                 <% editUnit.interiorPhotos?.forEach(photo=> { %>
                                     <img src="<%= photo %>" alt="Facade Photo">
@@ -250,7 +250,7 @@
 
                                 <label>Signboard Photos:</label>
 
-                                <% if (editUnit.signboardPhotos?.length) { %>
+                                <% if (editUnit.signboardPhotos?.length > 0) { %>
                                     <div class="photo-preview">
                                         <% editUnit.signboardPhotos?.forEach(photo=> { %>
                                             <img src="<%= photo %>" alt="Facade Photo">
