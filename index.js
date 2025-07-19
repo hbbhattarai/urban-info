@@ -3,11 +3,10 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const serverless = require('serverless-http');
-
+// Import sequelize and models from models/index.js
 const { sequelize, Survey } = require('./models');
 
-// Route imports
+/// Routes Identififer
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const surveyRoutes = require('./routes/surveyRoutes');
@@ -15,30 +14,28 @@ const shapefileRoutes = require('./routes/surveyShapefileRoutes');
 const surveyControlRoutes = require('./routes/surveyControlRoutes');
 
 const app = express();
-
-// Middleware setup
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const PORT = process.env.PORT || 3000;
 
 // Session store
 const sessionStore = new SequelizeStore({ db: sequelize });
+
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); 
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'defaultsecret',
+    secret: process.env.SESSION_SECRET,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
   })
 );
 
-// View engine setup
+// View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Auth middleware
+// Middlewares
 function authMiddleware(req, res, next) {
   if (!req.session.userId) return res.redirect('/login');
   next();
@@ -53,46 +50,62 @@ function roleMiddleware(allowedRoles) {
   };
 }
 
-// Routes
+// Static files (css, js)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Auth Routes
 app.use('/', authRoutes);
+
+// Admin Routes
 app.use('/admin/users', authMiddleware, roleMiddleware(['admin']), userRoutes);
 app.use('/admin/surveys', authMiddleware, roleMiddleware(['admin']), surveyRoutes);
 app.use('/admin/surveys/shapefile', authMiddleware, roleMiddleware(['admin']), shapefileRoutes);
+
+// Editor Routes
 app.use('/editor/surveys', authMiddleware, roleMiddleware(['editor']), surveyControlRoutes);
 
+// Admin dashboard
 app.get('/admin', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   const surveys = await Survey.findAll({ attributes: ['id', 'name'] });
-  res.render('admin', { username: req.session.username, surveys });
+  res.render('admin', {
+    username: req.session.username,
+    surveys,
+  });
 });
 
+// Editor dashboard
 app.get('/editor', authMiddleware, roleMiddleware(['editor']), async (req, res) => {
   const surveys = await Survey.findAll({ attributes: ['id', 'name'] });
-  res.render('editor', { username: req.session.username, surveys });
+  res.render('editor', {
+    username: req.session.username,
+    surveys,
+  });
 });
 
+// User dashboard
 app.get('/user', authMiddleware, roleMiddleware(['user']), async (req, res) => {
   const surveys = await Survey.findAll({ attributes: ['id', 'name'] });
-  res.render('user', { username: req.session.username, surveys });
+  res.render('user', {
+    username: req.session.username,
+    surveys,
+  });
 });
 
 app.get('/', (req, res) => res.redirect('/login'));
 
+// Sync database tables and start server
+async function startServer() {
+  try {
+    // Sync all models (you can also call syncAll() if you exported that)
+    await sequelize.sync({ alter: true });
+    sessionStore.sync(); // Ensure session table exists
 
-let initialized = false;
-async function initialize() {
-  if (!initialized) {
-    await sequelize.sync(); 
-    await sessionStore.sync();
-    initialized = true;
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
   }
 }
 
-module.exports = async (req, res) => {
-  try {
-    await initialize();
-    return serverless(app)(req, res);
-  } catch (err) {
-    console.error('Error initializing server:', err);
-    res.status(500).send('Server initialization error.');
-  }
-};
+startServer();

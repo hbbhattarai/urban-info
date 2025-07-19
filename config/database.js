@@ -1,9 +1,8 @@
-require('pg');
+
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(process.env.DB_URL, {
   dialect: 'postgres',
   logging: false,
   // If using SSL (e.g., on Heroku), you might need this:
@@ -14,5 +13,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
     },
   },
 });
+
 
 module.exports = sequelize;
