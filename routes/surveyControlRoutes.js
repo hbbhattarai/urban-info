@@ -234,7 +234,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
       let parcel = await Parcel.findOne({ where: { id: parcelId } });
       let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
 
-      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`);
 
       if (shapefile) {
         shapefile.status = status === 'on';
