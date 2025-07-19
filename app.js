@@ -5,10 +5,9 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const serverless = require('serverless-http');
 
-// Import sequelize and models from models/index.js
 const { sequelize, Survey } = require('./models');
 
-/// Routes Identififer
+// Routes
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const surveyRoutes = require('./routes/surveyRoutes');
@@ -16,28 +15,30 @@ const shapefileRoutes = require('./routes/surveyShapefileRoutes');
 const surveyControlRoutes = require('./routes/surveyControlRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Session store
+// Middleware setup
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Session setup
 const sessionStore = new SequelizeStore({ db: sequelize });
-
-app.use(express.urlencoded({ extended: true })); 
-app.use(express.json()); 
-
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'secret',
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
   })
 );
 
-// View engine
+// View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middlewares
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Auth middleware
 function authMiddleware(req, res, next) {
   if (!req.session.userId) return res.redirect('/login');
   next();
@@ -52,64 +53,45 @@ function roleMiddleware(allowedRoles) {
   };
 }
 
-// Static files (css, js)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Auth Routes
+// Routes
 app.use('/', authRoutes);
-
-// Admin Routes
 app.use('/admin/users', authMiddleware, roleMiddleware(['admin']), userRoutes);
 app.use('/admin/surveys', authMiddleware, roleMiddleware(['admin']), surveyRoutes);
 app.use('/admin/surveys/shapefile', authMiddleware, roleMiddleware(['admin']), shapefileRoutes);
-
-// Editor Routes
 app.use('/editor/surveys', authMiddleware, roleMiddleware(['editor']), surveyControlRoutes);
 
-// Admin dashboard
 app.get('/admin', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   const surveys = await Survey.findAll({ attributes: ['id', 'name'] });
-  res.render('admin', {
-    username: req.session.username,
-    surveys,
-  });
+  res.render('admin', { username: req.session.username, surveys });
 });
 
-// Editor dashboard
 app.get('/editor', authMiddleware, roleMiddleware(['editor']), async (req, res) => {
   const surveys = await Survey.findAll({ attributes: ['id', 'name'] });
-  res.render('editor', {
-    username: req.session.username,
-    surveys,
-  });
+  res.render('editor', { username: req.session.username, surveys });
 });
 
-// User dashboard
 app.get('/user', authMiddleware, roleMiddleware(['user']), async (req, res) => {
   const surveys = await Survey.findAll({ attributes: ['id', 'name'] });
-  res.render('user', {
-    username: req.session.username,
-    surveys,
-  });
+  res.render('user', { username: req.session.username, surveys });
 });
 
 app.get('/', (req, res) => res.redirect('/login'));
 
-// Sync database tables and start server
-async function startServer() {
+// Sync DB
+(async () => {
   try {
-    // Sync all models (you can also call syncAll() if you exported that)
     await sequelize.sync({ alter: true });
-    sessionStore.sync(); // Ensure session table exists
-
-    app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
-    });
+    await sessionStore.sync();
+    if (process.env.NODE_ENV !== 'production') {
+      const PORT = process.env.PORT || 3000;
+      app.listen(PORT, () => {
+        console.log(`Server running locally on http://localhost:${PORT}`);
+      });
+    }
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('Failed to initialize app:', error);
   }
-}
+})();
 
-startServer();
-
+// Export handler for Vercel
 module.exports = serverless(app);
