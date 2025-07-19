@@ -3,7 +3,6 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const serverless = require('serverless-http');
 
 const { sequelize, Survey } = require('./models');
 
@@ -92,6 +91,3 @@ app.get('/', (req, res) => res.redirect('/login'));
     console.error('Failed to initialize app:', error);
   }
 })();
-
-// Export handler for Vercel
-module.exports = serverless(app);
