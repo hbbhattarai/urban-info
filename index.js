@@ -6,12 +6,6 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const { sequelize, Survey } = require('./models');
 
-const DB_URL = process.env.DATABASE_URL;
-
-if (!DB_URL) {
-  throw new Error('DATABASE_URL environment variable is missing');
-}
-
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
