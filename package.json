@@ -2,7 +2,7 @@
   "name": "build-vision",
   "version": "1.0.0",
   "description": "Backend API for Build Vision using Express and Sequelize.",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
