@@ -7,7 +7,7 @@
     "postinstall": "npm install pg",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm run postinstall && vercel build"
+    "build": "npm run postinstall"
   },
   "keywords": [],
   "author": "",
