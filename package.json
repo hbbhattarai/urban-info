@@ -7,7 +7,7 @@
     "postinstall": "npm install pg",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm run postinstall"
+    "build": "node index.js"
   },
   "keywords": [],
   "author": "",
