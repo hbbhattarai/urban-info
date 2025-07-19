@@ -239,29 +239,32 @@
                         </div>
 
                         <label>Interior Photos:</label>
-                        <% if (editUnit.interiorPhotos?.length > 0) { %>
+                        <% if (editUnit && editUnit.interiorPhotos && editUnit.interiorPhotos.length> 0) { %>
                             <div class="photo-preview">
-                                <% editUnit.interiorPhotos?.forEach(photo=> { %>
+                                <% editUnit.interiorPhotos.forEach(photo=> { %>
                                     <img src="<%= photo %>" alt="Facade Photo">
-                                    <% }) %>
+                                    <% }); %>
                             </div>
-                            <% } %>
-                                <input type="file" name="interiorPhotos" multiple />
+                            <% } else { %>
+                                <p>No interior photos available.</p>
+                                <% } %>
+                                    <input type="file" name="interiorPhotos" multiple />
 
-                                <label>Signboard Photos:</label>
+                                    <label>Signboard Photos:</label>
 
-                                <% if (editUnit.signboardPhotos?.length > 0) { %>
-                                    <div class="photo-preview">
-                                        <% editUnit.signboardPhotos?.forEach(photo=> { %>
-                                            <img src="<%= photo %>" alt="Facade Photo">
-                                            <% }) %>
-                                    </div>
-                                    <% } %>
-                                        <input type="file" name="signboardPhotos" multiple />
 
-                                        <button type="submit">
-                                            <%= editUnit ? "Update" : "Add" %> Unit
-                                        </button>
+                                    <% if (editUnit?.signboardPhotos?.length> 0) { %>
+                                        <div class="photo-preview">
+                                            <% editUnit.signboardPhotos.forEach(photo=> { %>
+                                                <img src="<%= photo %>" alt="Signboard Photo">
+                                                <% }); %>
+                                        </div>
+                                        <% } else { %>
+                                            <p>No signboard photos available.</p>
+                                            <% } %>
+                                                <button type="submit">
+                                                    <%= editUnit ? "Update" : "Add" %> Unit
+                                                </button>
             </form>
         </div>
     </div>
