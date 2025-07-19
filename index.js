@@ -3,11 +3,11 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const serverless = require('serverless-http');
 
 const { sequelize, Survey } = require('./models');
 
-
-// Routes
+// Route imports
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const surveyRoutes = require('./routes/surveyRoutes');
@@ -20,11 +20,11 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session setup
+// Session store
 const sessionStore = new SequelizeStore({ db: sequelize });
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'secret',
+    secret: process.env.SESSION_SECRET || 'defaultsecret',
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -77,18 +77,22 @@ app.get('/user', authMiddleware, roleMiddleware(['user']), async (req, res) => {
 
 app.get('/', (req, res) => res.redirect('/login'));
 
-// Sync DB
-(async () => {
-  try {
-    await sequelize.sync({ alter: true });
+
+let initialized = false;
+async function initialize() {
+  if (!initialized) {
+    await sequelize.sync(); 
     await sessionStore.sync();
-    if (process.env.NODE_ENV !== 'production') {
-      const PORT = process.env.PORT || 3000;
-      app.listen(PORT, () => {
-        console.log(`Server running locally on http://localhost:${PORT}`);
-      });
-    }
-  } catch (error) {
-    console.error('Failed to initialize app:', error);
+    initialized = true;
   }
-})();
+}
+
+module.exports = async (req, res) => {
+  try {
+    await initialize();
+    return serverless(app)(req, res);
+  } catch (err) {
+    console.error('Error initializing server:', err);
+    res.status(500).send('Server initialization error.');
+  }
+};
