@@ -184,7 +184,7 @@ router.get('/:surveyId/survey/parcel/:parcelId/street', async (req, res) => {
 });
 
 router.post('/:surveyId/survey/parcel/:parcelId/street',
-  upload.array('photos', 10),
+  upload.array('parkPhotos', 10),
   async (req, res) => {
     const { parcelId, surveyId } = req.params;
     const { status, streetType, materialUsed, paved, notes } = req.body;
