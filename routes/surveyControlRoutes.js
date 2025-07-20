@@ -527,31 +527,25 @@ router.post(
 
     try {
       const interiorPhotos = [];
-      if (req.files['interiorPhotos'] && req.files['interiorPhotos'].length > 0) {
-        for (const file of req.files['interiorPhotos']) {
+      if (req.files && req.files.length > 0) {
+        for (const file of req.files) {
           try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'unit_interior_photos',
-            });
+            const result = await streamUpload(file.buffer);
             interiorPhotos.push(result.secure_url);
-            await fs.unlink(file.path);
           } catch (err) {
-            console.error('Cloudinary upload error (interiorPhotos):', err);
+            console.error('Cloudinary upload error:', err);
           }
         }
       }
 
       const signboardPhotos = [];
-      if (req.files['signboardPhotos'] && req.files['signboardPhotos'].length > 0) {
-        for (const file of req.files['signboardPhotos']) {
+       if (req.files && req.files.length > 0) {
+        for (const file of req.files) {
           try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'unit_signboard_photos',
-            });
+            const result = await streamUpload(file.buffer);
             signboardPhotos.push(result.secure_url);
-            await fs.unlink(file.path);
           } catch (err) {
-            console.error('Cloudinary upload error (signboardPhotos):', err);
+            console.error('Cloudinary upload error:', err);
           }
         }
       }
