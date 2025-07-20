@@ -568,14 +568,9 @@ router.post(
         bathrooms: (useType === 'Residential' || useType === 'Both') ? bathrooms : null,
         businessName: (useType === 'Commercial' || useType === 'Both') ? businessName : null,
         licenseNumber: (useType === 'Commercial' || useType === 'Both') ? licenseNumber : null,
+        interiorPhotos: interiorPhotos,
+        signboardPhotos: signboardPhotos
       };
-
-      if (interiorPhotos.length > 0) {
-        unitData.interiorPhotos = interiorPhotos;
-      }
-      if (signboardPhotos.length > 0) {
-        unitData.signboardPhotos = signboardPhotos;
-      }
 
       if (unitId) {
         const unit = await Unit.findByPk(unitId);
