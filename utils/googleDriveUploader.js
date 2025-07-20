@@ -1,47 +1,31 @@
-const { google } = require('googleapis');
+const fs = require('fs');
 const path = require('path');
+const { google } = require('googleapis');
 
-// Auth config
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(__dirname, '../config/urban-info-survey-gmc.json'),
   scopes: ['https://www.googleapis.com/auth/drive'],
 });
 
+const drive = google.drive({ version: 'v3', auth });
+
 async function uploadFileToDrive(file) {
-  const authClient = await auth.getClient();
-  const drive = google.drive({ version: 'v3', auth: authClient });
+  const fileMetadata = {
+    name: file.originalname,
+  };
+
+  const media = {
+    mimeType: file.mimetype,
+    body: fs.createReadStream(file.path), // ✅ This must be a stream
+  };
 
   const response = await drive.files.create({
-    requestBody: {
-      name: file.originalname,
-      mimeType: file.mimetype,
-    },
-    media: {
-      mimeType: file.mimetype,
-      body: file.buffer,
-    },
+    resource: fileMetadata,
+    media: media,
+    fields: 'id, webViewLink, webContentLink',
   });
 
-  // Make file public
-  await drive.permissions.create({
-    fileId: response.data.id,
-    requestBody: {
-      role: 'reader',
-      type: 'anyone',
-    },
-  });
-
-  const publicUrl = `https://drive.google.com/uc?id=${response.data.id}`;
-  return publicUrl;
+  return response.data.webViewLink;
 }
 
-async function uploadFilesToDrive(files) {
-  const uploadedUrls = [];
-  for (const file of files) {
-    const url = await uploadFileToDrive(file);
-    uploadedUrls.push(url);
-  }
-  return uploadedUrls;
-}
-
-module.exports = uploadFilesToDrive;
+module.exports = uploadFileToDrive;
