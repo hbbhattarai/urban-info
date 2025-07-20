@@ -111,7 +111,7 @@
   <% if (streets && streets.length > 0) { %>
     <% streets.forEach((street, idx) => { %>
       <div class="street-card">
-        <h2>Street <%= idx + 1 %>: <%= street.streetType %></h2>
+        <h2>Street Type: <%= street.streetType %></h2>
         <p><strong>Material Used:</strong> <%= street.materialUsed %></p>
         <p><strong>Paved:</strong> <%= street.paved ? 'Yes' : 'No' %></p>
         <% if (street.notes) { %>
