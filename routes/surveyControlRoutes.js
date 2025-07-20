@@ -1,5 +1,3 @@
-// surveyRoutes.js (with Google Drive image upload integration for all routes)
-
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -14,6 +12,7 @@ const Building = require('../models/Building');
 const Unit = require('../models/Unit');
 const Shapefile = require('../models/Shapefile');
 const surveyShapefileController = require('../controllers/surveyShapefileController');
+const googleDriveAuth = require('../middlewares/googleDriveAuth');
 
 const storage = multer.memoryStorage();
 
@@ -179,7 +178,7 @@ router.post('/:surveyId/survey/parcel/:featureId', async (req, res) => {
 });
 
 // Park route
-router.post('/:surveyId/survey/parcel/:parcelId/park', upload.array('parkPhotos', 10), async (req, res) => {
+router.post('/:surveyId/survey/parcel/:parcelId/park', googleDriveAuth, upload.array('parkPhotos', 10), async (req, res) => {
   const { surveyId, parcelId } = req.params;
   const { status, name, areaSize, parkType } = req.body;
   try {
@@ -205,7 +204,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/park', upload.array('parkPhotos'
 });
 
 // Street route
-router.post('/:surveyId/survey/parcel/:parcelId/street', upload.array('photos', 10), async (req, res) => {
+router.post('/:surveyId/survey/parcel/:parcelId/street',  googleDriveAuth, upload.array('photos', 10), async (req, res) => {
   const { parcelId, surveyId } = req.params;
   const { status, streetType, materialUsed, paved, notes } = req.body;
   try {
@@ -231,7 +230,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/street', upload.array('photos', 
 });
 
 // Plot route
-router.post('/:surveyId/survey/parcel/:parcelId/plot', upload.array('facadePhotos', 10), async (req, res) => {
+router.post('/:surveyId/survey/parcel/:parcelId/plot', googleDriveAuth, upload.array('facadePhotos', 10), async (req, res) => {
   const { parcelId, surveyId } = req.params;
   const { status, isConstructed } = req.body;
   try {
@@ -261,7 +260,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot', upload.array('facadePhoto
 });
 
 // Building create route
-router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/edit', upload.array('facadePhotos', 10), async (req, res) => {
+router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/edit', googleDriveAuth, upload.array('facadePhotos', 10), async (req, res) => {
   const { surveyId, parcelId, plotId, buildingId } = req.params;
   const { name, ownerCid, yearBuilt, storeys, structureType, retrofitReady } = req.body;
   try {
@@ -279,7 +278,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
 });
 
 // Building add route
-router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add', upload.array('facadePhotos', 10), async (req, res) => {
+router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add', googleDriveAuth, upload.array('facadePhotos', 10), async (req, res) => {
   const { surveyId, parcelId, plotId } = req.params;
   const { name, ownerCid, yearBuilt, storeys, structureType, retrofitReady } = req.body;
   try {
@@ -293,7 +292,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add', upload.ar
 });
 
 // Unit route
-router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/unit/save', upload.fields([
+router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/unit/save', googleDriveAuth, upload.fields([
   { name: 'interiorPhotos', maxCount: 10 },
   { name: 'signboardPhotos', maxCount: 10 }
 ]), async (req, res) => {

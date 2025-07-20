@@ -90,7 +90,7 @@ app.get('/user', authMiddleware, roleMiddleware(['user']), async (req, res) => {
   });
 });
 
-app.get('/', (req, res) => res.redirect('/login'));
+app.get('/', (req, res) => res.redirect('/google'));
 
 // Sync database tables and start server
 async function startServer() {
