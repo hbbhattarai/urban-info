@@ -496,11 +496,11 @@ router.post(
         if (!unit) return res.status(404).send('Unit not found');
         Object.assign(unit, unitData);
         await unit.save();
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot/${plotId}/building/${buildingId}/unit/${unit.id}/view`);
+      res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot/${plotId}/building/${buildingId}/unit/${unit.id}/view`);
 
       } else {
         await Unit.create(unitData);
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot/${plotId}/building/${buildingId}/units`);
+      res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot/${plotId}/building/${buildingId}/units`);
 
       }
 
@@ -529,6 +529,26 @@ router.get('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 module.exports = router;

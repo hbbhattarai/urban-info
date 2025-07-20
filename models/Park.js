@@ -8,7 +8,4 @@ const Park = sequelize.define('Park', {
   facilities: { type: DataTypes.TEXT },
   photos:  { type: DataTypes.ARRAY(DataTypes.STRING) },
 });
-
-// Remove associate here; define all associations in index.js
-
 module.exports = Park;
