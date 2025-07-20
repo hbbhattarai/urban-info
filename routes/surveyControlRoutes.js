@@ -204,7 +204,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/street',
         for (const file of req.files) {
           try {
             const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'survey_photos',
+              folder: 'street_photos',
             });
             photoUrls.push(result.secure_url);
             await fs.unlink(file.path); // clean up local file
