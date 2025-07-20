@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "urban-info-survey-gmc",
+  "private_key_id": "81ff0ecec86a3036fc6bc5f924051b9fba4c5039",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCrouyuu8B3Sg9N\ncv3RC15txblvy475V6GyB7B9jEU8cPaNF/AKRQdqw0KrGr+8tS15BiASLVho3T76\nLyYsyKYGHVDbTdl8hqdj2wvvO6ZjuJvFlALX2v8VZjDytNoGowjXZ8M8wqRhALKl\ncZv318nAVmH//lDAB09adQSCPVGM6lisz6ipCA/cAJNk5RFSawnokGtvczZeoG9u\ntLPjwkDdYHNqKJqsOSfNjky8KUdGsrBUXKuf8N7MRL6i2dO/KN1SZAlIEqVqODb0\nq/dookZq1vgi9Em6rDMxUoF5casqgmwmDi92/47kNpKXQVxLhnGbOPs2n9UikSLf\nyauBGMfDAgMBAAECggEARLXIgnrvJdIkJiEusw0WFGPfRH39EpyeQqMJaHlLDlM6\noGlA0xunSHo6qjzfHTB6r8Rf+mbkybYojAdsBOmebTw3LlQQCOXvBO6f7Hm4tpsk\n4QfLy5YEIBD073SvA5Eo7PLBGgXhwGODIPBGPAXK4pCyUsUAlp9WiSPnViwuBXbz\ngVPSixD2BbPd07xT3vPlEiXa5+5B6QzGG0D7MsFcJlY0fmixB1zRQ3nuTJRUNer2\ncdKqkoTYkcg2WAZu6wen4UoY1YZqptQYk5ck1AlxdB0ojUrIFM5IQM/X39FlkQFf\niAfq+gtsfV04OoiGpB0X1LDEZ5byIFIHGLnHcQqpAQKBgQDWXMz/zxA81Lzv36on\nZ2qn8OlgbbV/3HfE0yYKnw/Y446T1GONsYOVZDG+STbvjTPapKX4gGcjliDx9YoU\nl14pvnvmAKgppTxY2Z4RgEP/zL4l3cyWK4Nnx2pT1e1XVuhsJiED0BfiHXhfImd/\nAUGBzlz9aMBolOxNoSSqCX644QKBgQDM+ZCTPU4cGzC2sC53hu4TxQpnacjbjhNx\nMZlK5UMkLuDLXIAq6kJtIn2FDqbtqECJ67tDLDCETyaRxyRa80VYbsUHYD8eeYzo\n/4pmmUVIKeDOa9c1Gt1qqpRLngpOGs2hxEsgUGPsO2NSpOPYP7vS3IEyN+ytd8kP\nD5C/UoChIwKBgAlu5AaN0iUbJ4VWzmIVhvgE/gAkU8xgo1SiBhaJkWT1/pw6yHa/\nzQ6R7i51gllgWVvRywv4epFyVdjP+VeWoaosm78vYDcU8mbmjLIwds2W8Pcxn4Ms\nPwgeGmu+CkfBp1C7DNDiI2rr6RQmq29HWt6fejAcn/r6Mrvnz3k8GbuBAoGAFdyw\nbOPnBtxnj7Su4BTGI9mqSGliAPjgXfxaS0C0rpFJbKdLDEi8GQPKu3xalZKSf6Ni\n78Ew04vVo0rIN+MmjE4UObssQEXan6dRzaufVhkRXzLlW0aoQw46ju4mTzpQoGZd\nVO7+GV4kM9ZebtwtXkoihYatebsC+NZCLAXSrl0CgYEAlN/2uG8fX6R/0twEp5PV\nCpQeydN4+FYuaJykj9caVEcOMSV4Ve4tgd0c1KaKGIW0hbzlgYfyxASSSWVLlGEh\nvkL6Dhi8AEcspl5PdhZ7S1ZPgFf1G2LXW0XlShgVZGO6rA9F8goVNM8cYH8ZUwS4\nLDKbJoT0p0nv3jN9ydeziQU=\n-----END PRIVATE KEY-----\n",
+  "client_email": "driveuploader@urban-info-survey-gmc.iam.gserviceaccount.com",
+  "client_id": "101579531528420809044",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/driveuploader%40urban-info-survey-gmc.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
