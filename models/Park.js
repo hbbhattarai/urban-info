@@ -6,6 +6,6 @@ const Park = sequelize.define('Park', {
   name: { type: DataTypes.STRING },
   area: { type: DataTypes.FLOAT },
   facilities: { type: DataTypes.TEXT },
-  photos:  { type: DataTypes.ARRAY(DataTypes.STRING) },
+  photos: { type: DataTypes.ARRAY(DataTypes.STRING) },
 });
 module.exports = Park;

@@ -120,15 +120,13 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
         shapefile.status = status;
         await shapefile.save();
       }
-      const photosUrls = req.files
-        ? req.files.map((f) => `/uploads/${f.filename}`).join(',')
-        : '';
+        const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
       if (park) {
         park.name = name;
         park.areaSize = areaSize || null;
         park.parkType = parkType;
-        if (photosUrls) park.photos = photosUrls;
+        if (photoUrls) park.photos = photoUrls;
         await park.save();
       } else {
         await Park.create({
@@ -136,7 +134,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
           name,
           areaSize,
           parkType,
-          photos: photosUrls
+          photos: photoUrls
         });
       }
 
