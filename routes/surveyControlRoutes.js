@@ -525,12 +525,10 @@ router.post(
       licenseNumber
     } = req.body;
 
-    console.log(req.files)
-
     try {
       const interiorPhotos = [];
-      if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
+      if (req.files?.interiorPhotos) {
+        for (const file of req.files.interiorPhotos) {
           try {
             const result = await streamUpload(file.buffer);
             interiorPhotos.push(result.secure_url);
@@ -541,8 +539,8 @@ router.post(
       }
 
       const signboardPhotos = [];
-       if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
+      if (req.files?.signboardPhotos) {
+        for (const file of req.files.signboardPhotos) {
           try {
             const result = await streamUpload(file.buffer);
             signboardPhotos.push(result.secure_url);
@@ -552,7 +550,8 @@ router.post(
         }
       }
 
-      const unitData = {
+      const unitData = {};
+      Object.assign(unitData, {
         buildingId,
         useType,
         floor,
@@ -570,7 +569,7 @@ router.post(
         bathrooms: (useType === 'Residential' || useType === 'Both') ? bathrooms : null,
         businessName: (useType === 'Commercial' || useType === 'Both') ? businessName : null,
         licenseNumber: (useType === 'Commercial' || useType === 'Both') ? licenseNumber : null,
-      };
+      });
 
       if (interiorPhotos.length > 0) {
         unitData.interiorPhotos = interiorPhotos;
@@ -595,6 +594,7 @@ router.post(
     }
   }
 );
+
 
 router.get('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/unit/:unitId/view', async (req, res) => {
   const { surveyId, parcelId, plotId, buildingId, unitId } = req.params;
