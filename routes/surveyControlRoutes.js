@@ -5,8 +5,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { uploadFileToDrive } = require('../utils/googleDriveUploader');
-
+const { uploadFilesToDrive } = require('../utils/driveUploader');
 const Parcel = require('../models/Parcel');
 const Plot = require('../models/Plot');
 const Park = require('../models/Park');
@@ -19,17 +18,6 @@ const surveyShapefileController = require('../controllers/surveyShapefileControl
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
-
-async function uploadFilesToDrive(files) {
-  const links = [];
-  for (const file of files) {
-    const uploaded = await uploadFileToDrive(file);
-    links.push(uploaded.webContentLink);
-    fs.unlinkSync(file.path);
-  }
-  return links;
-}
-
 
 // GET Routes
 
@@ -181,6 +169,7 @@ router.get('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId
 
 // POST Routes 
 
+// Create or redirect to parcel
 router.post('/:surveyId/survey/parcel/:featureId', async (req, res) => {
   const { surveyId, featureId } = req.params;
   const { type } = req.body;
@@ -189,14 +178,16 @@ router.post('/:surveyId/survey/parcel/:featureId', async (req, res) => {
   res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/${type}`);
 });
 
+// Park route
 router.post('/:surveyId/survey/parcel/:parcelId/park', upload.array('parkPhotos', 10), async (req, res) => {
   const { surveyId, parcelId } = req.params;
   const { status, name, areaSize, parkType } = req.body;
   try {
-    const photoLinks = await uploadFilesToDrive(req.files || []);
+    const photoLinks = await uploadFilesToDrive(req.files || [], req.oauth2Client);
     const parcel = await Parcel.findByPk(parcelId);
     const shapefile = await Shapefile.findByPk(parcel.featureId);
     if (shapefile) { shapefile.status = status; await shapefile.save(); }
+
     let park = await Park.findOne({ where: { parcelId } });
     if (park) {
       Object.assign(park, { name, areaSize, parkType });
@@ -205,6 +196,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/park', upload.array('parkPhotos'
     } else {
       await Park.create({ parcelId, name, areaSize, parkType, photos: photoLinks.join(',') });
     }
+
     res.redirect(`/editor/surveys/view/${surveyId}`);
   } catch (err) {
     console.error(err);
@@ -212,14 +204,16 @@ router.post('/:surveyId/survey/parcel/:parcelId/park', upload.array('parkPhotos'
   }
 });
 
+// Street route
 router.post('/:surveyId/survey/parcel/:parcelId/street', upload.array('photos', 10), async (req, res) => {
   const { parcelId, surveyId } = req.params;
   const { status, streetType, materialUsed, paved, notes } = req.body;
   try {
-    const photoLinks = await uploadFilesToDrive(req.files || []);
+    const photoLinks = await uploadFilesToDrive(req.files || [], req.oauth2Client);
     const parcel = await Parcel.findByPk(parcelId);
     const shapefile = await Shapefile.findByPk(parcel.featureId);
     if (shapefile) { shapefile.status = status; await shapefile.save(); }
+
     let street = await Street.findOne({ where: { parcelId } });
     if (street) {
       Object.assign(street, { streetType, materialUsed, paved: paved === 'on', notes });
@@ -228,6 +222,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/street', upload.array('photos', 
     } else {
       await Street.create({ parcelId, streetType, materialUsed, paved: paved === 'on', notes, photos: photoLinks.join(',') });
     }
+
     res.redirect(`/editor/surveys/view/${surveyId}`);
   } catch (err) {
     console.error(err);
@@ -235,14 +230,16 @@ router.post('/:surveyId/survey/parcel/:parcelId/street', upload.array('photos', 
   }
 });
 
+// Plot route
 router.post('/:surveyId/survey/parcel/:parcelId/plot', upload.array('facadePhotos', 10), async (req, res) => {
   const { parcelId, surveyId } = req.params;
   const { status, isConstructed } = req.body;
   try {
-    const photoLinks = await uploadFilesToDrive(req.files || []);
+    const photoLinks = await uploadFilesToDrive(req.files || [], req.oauth2Client);
     const parcel = await Parcel.findByPk(parcelId);
     const shapefile = await Shapefile.findByPk(parcel.featureId);
     if (shapefile) { shapefile.status = status === 'on'; await shapefile.save(); }
+
     let plot = await Plot.findOne({ where: { parcelId } });
     if (plot) {
       Object.assign(plot, { isConstructed: isConstructed === 'on', status: status === 'on' });
@@ -251,6 +248,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot', upload.array('facadePhoto
     } else {
       plot = await Plot.create({ parcelId, isConstructed: isConstructed === 'on', status: status === 'on', photos: photoLinks.join(',') });
     }
+
     if (isConstructed === 'on') {
       res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/building/${plot.id}`);
     } else {
@@ -262,24 +260,12 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot', upload.array('facadePhoto
   }
 });
 
-router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add', upload.array('facadePhotos', 10), async (req, res) => {
-  const { surveyId, parcelId, plotId } = req.params;
-  const { name, ownerCid, yearBuilt, storeys, structureType, retrofitReady } = req.body;
-  try {
-    const photoLinks = await uploadFilesToDrive(req.files || []);
-    await Building.create({ plotId, name, ownerCid, yearBuilt, storeys, structureType, retrofitReady: retrofitReady === 'on', facadePhotos: photoLinks.join(',') });
-    res.redirect(`/editor/surveys/view/${surveyId}`);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error saving building');
-  }
-});
-
+// Building create route
 router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/edit', upload.array('facadePhotos', 10), async (req, res) => {
   const { surveyId, parcelId, plotId, buildingId } = req.params;
   const { name, ownerCid, yearBuilt, storeys, structureType, retrofitReady } = req.body;
   try {
-    const photoLinks = await uploadFilesToDrive(req.files || []);
+    const photoLinks = await uploadFilesToDrive(req.files || [], req.oauth2Client);
     const building = await Building.findByPk(buildingId);
     if (!building) return res.status(404).send('Building not found');
     Object.assign(building, { name, ownerCid, yearBuilt, storeys, structureType, retrofitReady: retrofitReady === 'on' });
@@ -292,6 +278,21 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
   }
 });
 
+// Building add route
+router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add', upload.array('facadePhotos', 10), async (req, res) => {
+  const { surveyId, parcelId, plotId } = req.params;
+  const { name, ownerCid, yearBuilt, storeys, structureType, retrofitReady } = req.body;
+  try {
+    const photoLinks = await uploadFilesToDrive(req.files || [], req.oauth2Client);
+    await Building.create({ plotId, name, ownerCid, yearBuilt, storeys, structureType, retrofitReady: retrofitReady === 'on', facadePhotos: photoLinks.join(',') });
+    res.redirect(`/editor/surveys/view/${surveyId}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error saving building');
+  }
+});
+
+// Unit route
 router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/unit/save', upload.fields([
   { name: 'interiorPhotos', maxCount: 10 },
   { name: 'signboardPhotos', maxCount: 10 }
@@ -299,8 +300,8 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
   const { surveyId, parcelId, plotId, buildingId } = req.params;
   const data = req.body;
   try {
-    const interiorLinks = await uploadFilesToDrive(req.files['interiorPhotos'] || []);
-    const signboardLinks = await uploadFilesToDrive(req.files['signboardPhotos'] || []);
+    const interiorLinks = await uploadFilesToDrive(req.files['interiorPhotos'] || [], req.oauth2Client);
+    const signboardLinks = await uploadFilesToDrive(req.files['signboardPhotos'] || [], req.oauth2Client);
 
     const unitData = {
       buildingId,
