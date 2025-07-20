@@ -28,4 +28,4 @@ async function uploadFileToDrive(file) {
   return response.data.webViewLink;
 }
 
-module.exports = uploadFileToDrive;
+module.exports = { uploadFileToDrive };
