@@ -1,5 +1,6 @@
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 const fs = require('fs/promises');
 const express = require('express');
 const router = express.Router();
@@ -14,14 +15,11 @@ const surveyShapefileController = require('../controllers/surveyShapefileControl
 const multer = require('multer');
 const Shapefile = require('../models/Shapefile');
 
-// Multer setup for uploads folder
-const storage = multer.memoryStorage()
-const upload = multer({ storage });
 
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 // API to return shapefile data as GeoJSON
@@ -30,7 +28,20 @@ router.get('/get-data/:surveyId', surveyShapefileController.getData);
 // View survey dashboard
 router.get('/view/:surveyId', surveyShapefileController.renderSurveyData);
 
+// Multer setup for uploads folder
+const storage = multer.memoryStorage()
+const upload = multer({ storage });
 
+
+function streamUpload(fileBuffer) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream({ folder: 'survey_photos' }, (error, result) => {
+      if (result) resolve(result);
+      else reject(error);
+    });
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
+}
 
 // Parcel type selection page
 router.get('/:surveyId/survey/parcel/:featureId', async (req, res) => {
@@ -132,12 +143,8 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'park_photos', // optional folder name
-            });
+            const result = await streamUpload(file.buffer);
             photoUrls.push(result.secure_url);
-            // Optionally delete local file after upload
-            await fs.unlink(file.path);
           } catch (err) {
             console.error('Cloudinary upload error:', err);
           }
@@ -204,11 +211,8 @@ router.post('/:surveyId/survey/parcel/:parcelId/street',
       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'street_photos',
-            });
+            const result = await streamUpload(file.buffer);
             photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // clean up local file
           } catch (err) {
             console.error('Cloudinary upload error:', err);
           }
@@ -275,14 +279,11 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
 
       const photoUrls = [];
 
-      if (req.files && req.files.length > 0) {
+       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'plot_facade_photos',
-            });
+            const result = await streamUpload(file.buffer);
             photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // remove local file after upload
           } catch (err) {
             console.error('Cloudinary upload error:', err);
           }
@@ -355,14 +356,11 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
     try {
       const photoUrls = [];
 
-      if (req.files && req.files.length > 0) {
+       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'building_facade_photos',
-            });
+            const result = await streamUpload(file.buffer);
             photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // delete local file after upload
           } catch (err) {
             console.error('Cloudinary upload error:', err);
           }
@@ -417,14 +415,11 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
     try {
       const photoUrls = [];
 
-      if (req.files && req.files.length > 0) {
+       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'building_facade_photos',
-            });
+            const result = await streamUpload(file.buffer);
             photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // delete local file after upload
           } catch (err) {
             console.error('Cloudinary upload error:', err);
           }
