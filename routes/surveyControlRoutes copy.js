@@ -1,6 +1,3 @@
-require('dotenv').config();
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs/promises');
 const express = require('express');
 const router = express.Router();
 const Parcel = require('../models/Parcel');
@@ -13,13 +10,6 @@ const path = require('path');
 const surveyShapefileController = require('../controllers/surveyShapefileController');
 const multer = require('multer');
 const Shapefile = require('../models/Shapefile');
-
-
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
-});
 
 // API to return shapefile data as GeoJSON
 router.get('/get-data/:surveyId', surveyShapefileController.getData);
@@ -121,46 +111,34 @@ router.get('/:surveyId/survey/parcel/:parcelId/park', async (req, res) => {
 });
 
 router.post('/:surveyId/survey/parcel/:parcelId/park',
-  upload.array('parkPhotos', 10), // multer middleware to accept up to 10 files
+  upload.array('parkPhotos', 10),
   async (req, res) => {
-    const { parcelId, surveyId } = req.params;
-    const { status, name, areaSize, facilities } = req.body;
+    const { parcelId } = req.params;
+    const { surveyId } = req.params;
+    const { status } = req.body;
+    const { name, areaSize, facilities } = req.body;
 
     try {
-      let park = await Park.findOne({ where: { parcelId } });
+
+
+      let park = await Park.findOne({ where: { parcelId: parcelId } });
       let parcel = await Parcel.findOne({ where: { id: parcelId } });
       let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
       if (shapefile) {
         shapefile.status = status;
         await shapefile.save();
       }
-
-      const photoUrls = [];
-
-      if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'park_photos', // optional folder name
-            });
-            photoUrls.push(result.secure_url);
-            // Optionally delete local file after upload
-            await fs.unlink(file.path);
-          } catch (err) {
-            console.error('Cloudinary upload error:', err);
-          }
-        }
-      }
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
       if (park) {
         park.name = name;
         park.areaSize = areaSize || null;
         park.facilities = facilities;
-        if (photoUrls.length > 0) park.photos = photoUrls;
+        if (photoUrls) park.photos = photoUrls;
         await park.save();
       } else {
         await Park.create({
-          parcelId,
+          parcelId: parcelId,
           name,
           areaSize,
           facilities,
@@ -175,7 +153,6 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
     }
   }
 );
-
 
 // Street Routes
 
@@ -193,13 +170,19 @@ router.get('/:surveyId/survey/parcel/:parcelId/street', async (req, res) => {
 });
 
 router.post('/:surveyId/survey/parcel/:parcelId/street',
-  upload.array('photos', 10),
+  upload.array('photos', 10), // Match the `name="photos"` in form
   async (req, res) => {
     const { parcelId, surveyId } = req.params;
-    const { status, streetType, materialUsed, paved, notes } = req.body;
+    const { status } = req.body;
+    const {
+      streetType,
+      materialUsed,
+      paved,
+      notes
+    } = req.body;
 
     try {
-      let street = await Street.findOne({ where: { parcelId } });
+      let street = await Street.findOne({ where: { parcelId: parcelId } });
       let parcel = await Parcel.findOne({ where: { id: parcelId } });
       let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
       if (shapefile) {
@@ -207,32 +190,18 @@ router.post('/:surveyId/survey/parcel/:parcelId/street',
         await shapefile.save();
       }
 
-      const photoUrls = [];
-
-      if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'survey_photos',
-            });
-            photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // clean up local file
-          } catch (err) {
-            console.error('Cloudinary upload error:', err);
-          }
-        }
-      }
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
       if (street) {
         street.streetType = streetType;
         street.materialUsed = materialUsed;
-        street.paved = paved === 'on';
+        street.paved = paved === 'on'; // checkbox returns 'on' if checked
         street.notes = notes;
         if (photoUrls.length > 0) street.photos = photoUrls;
         await street.save();
       } else {
         await Street.create({
-          parcelId,
+          parcelId: parcelId,
           streetType,
           materialUsed,
           paved: paved === 'on',
@@ -248,7 +217,6 @@ router.post('/:surveyId/survey/parcel/:parcelId/street',
     }
   }
 );
-
 
 
 // Plot Routes
@@ -281,21 +249,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
       let parcel = await Parcel.findOne({ where: { id: parcelId } });
       let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
 
-      const photoUrls = [];
-
-      if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'plot_facade_photos',
-            });
-            photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // remove local file after upload
-          } catch (err) {
-            console.error('Cloudinary upload error:', err);
-          }
-        }
-      }
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
       if (shapefile) {
         shapefile.status = status === 'on';
@@ -304,7 +258,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
 
       if (plot) {
         plot.isConstructed = isConstructed === 'on';
-        if (photoUrls.length > 0) plot.photos = photoUrls;
+        plot.photos = photoUrls;
         plot.status = status === 'on';
         await plot.save();
       } else {
@@ -328,7 +282,6 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
     }
   }
 );
-
 
 
 // Building Routes
@@ -361,21 +314,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
     } = req.body;
 
     try {
-      const photoUrls = [];
-
-      if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'building_facade_photos',
-            });
-            photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // delete local file after upload
-          } catch (err) {
-            console.error('Cloudinary upload error:', err);
-          }
-        }
-      }
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
       await Building.create({
         plotId,
@@ -395,6 +334,8 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
     }
   }
 );
+
+
 
 router.get('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/edit', async (req, res) => {
   const { surveyId, parcelId, buildingId, plotId } = req.params;
@@ -423,21 +364,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
     } = req.body;
 
     try {
-      const photoUrls = [];
-
-      if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'building_facade_photos',
-            });
-            photoUrls.push(result.secure_url);
-            await fs.unlink(file.path); // delete local file after upload
-          } catch (err) {
-            console.error('Cloudinary upload error:', err);
-          }
-        }
-      }
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
       const building = await Building.findByPk(buildingId);
       if (!building) return res.status(404).send('Building not found');
@@ -463,6 +390,9 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
     }
   }
 );
+
+
+
 /// Units Routes 
 
 router.get(
@@ -542,37 +472,10 @@ router.post(
       licenseNumber
     } = req.body;
 
+    const interiorPhotos = req.files['interiorPhotos']?.map(file => `/uploads/${file.filename}`) || [];
+    const signboardPhotos = req.files['signboardPhotos']?.map(file => `/uploads/${file.filename}`) || [];
+
     try {
-      const interiorPhotos = [];
-      if (req.files['interiorPhotos'] && req.files['interiorPhotos'].length > 0) {
-        for (const file of req.files['interiorPhotos']) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'unit_interior_photos',
-            });
-            interiorPhotos.push(result.secure_url);
-            await fs.unlink(file.path);
-          } catch (err) {
-            console.error('Cloudinary upload error (interiorPhotos):', err);
-          }
-        }
-      }
-
-      const signboardPhotos = [];
-      if (req.files['signboardPhotos'] && req.files['signboardPhotos'].length > 0) {
-        for (const file of req.files['signboardPhotos']) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'unit_signboard_photos',
-            });
-            signboardPhotos.push(result.secure_url);
-            await fs.unlink(file.path);
-          } catch (err) {
-            console.error('Cloudinary upload error (signboardPhotos):', err);
-          }
-        }
-      }
-
       const unitData = {
         buildingId,
         useType,
@@ -606,10 +509,13 @@ router.post(
         Object.assign(unit, unitData);
         await unit.save();
         res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot/${plotId}/building/${buildingId}/unit/${unit.id}/view`);
+
       } else {
         await Unit.create(unitData);
         res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot/${plotId}/building/${buildingId}/units`);
+
       }
+
     } catch (error) {
       console.error(error);
       res.status(500).send('Failed to save unit');
