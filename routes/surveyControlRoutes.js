@@ -14,6 +14,9 @@ const surveyShapefileController = require('../controllers/surveyShapefileControl
 const multer = require('multer');
 const Shapefile = require('../models/Shapefile');
 
+// Multer setup for uploads folder
+const storage = multer.memoryStorage()
+const upload = multer({ storage });
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -27,9 +30,7 @@ router.get('/get-data/:surveyId', surveyShapefileController.getData);
 // View survey dashboard
 router.get('/view/:surveyId', surveyShapefileController.renderSurveyData);
 
-// Multer setup for uploads folder
-const storage = multer.memoryStorage()
-const upload = multer({ storage });
+
 
 // Parcel type selection page
 router.get('/:surveyId/survey/parcel/:featureId', async (req, res) => {
@@ -184,7 +185,7 @@ router.get('/:surveyId/survey/parcel/:parcelId/street', async (req, res) => {
 });
 
 router.post('/:surveyId/survey/parcel/:parcelId/street',
-  upload.array('parkPhotos', 10),
+  upload.array('photos', 10),
   async (req, res) => {
     const { parcelId, surveyId } = req.params;
     const { status, streetType, materialUsed, paved, notes } = req.body;

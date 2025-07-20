@@ -102,7 +102,7 @@
       <div class="building-card">
         <h2>Park <%= idx + 1 %>: <%= p.name %></h2>
         <p><strong>Area Size:</strong> <%= p.areaSize %> sqm</p>
-        <p><strong> Facilities:</strong> <%= p.facilities %> sqm</p>
+        <p><strong> Facilities:</strong> <%= p.facilities %> </p>
 
         <% if (p.photos && p.photos.length) { %>
           <div class="photo-preview">
@@ -127,7 +127,7 @@
       <input type="text" id="facilities" name="facilities" required>
 
       <label for="parkPhotos">Park Photos:</label>
-      <input type="file" id="parkPhotos" name="parkPhotos" accept="image/*" multiple>
+      <input type="file" id="photos" name="parkPhotos" accept="image/*" multiple>
 
       <label>
         <input type="checkbox" id="status" name="status">
