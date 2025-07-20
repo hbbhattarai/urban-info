@@ -21,6 +21,26 @@
       font-weight: 600;
     }
 
+    .building-card {
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .photo-preview {
+      margin-top: 15px;
+    }
+
+    .photo-preview img {
+      width: 100px;
+      height: auto;
+      margin-right: 10px;
+      border-radius: 4px;
+    }
+
     form {
       max-width: 500px;
       margin: auto;
@@ -76,24 +96,46 @@
 </head>
 <body>
   <h1>Park Details for Parcel ID: <%= parcelId %></h1>
-  <form action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/park" method="POST" enctype="multipart/form-data">
-    <label for="name">Park Name:</label>
-    <input type="text" id="name" name="name" required>
 
-    <label for="areaSize">Area Size:</label>
-    <input type="number" id="areaSize" name="areaSize" required>
+  <% if (park && park.length > 0) { %>
+    <% park.forEach((p, idx) => { %>
+      <div class="building-card">
+        <h2>Park <%= idx + 1 %>: <%= p.name %></h2>
+        <p><strong>Area Size:</strong> <%= p.areaSize %> sqm</p>
+        <p><strong> Facilities:</strong> <%= p.facilities %> sqm</p>
 
-    <label for="parkType">Park Type:</label>
-    <input type="text" id="parkType" name="parkType" required>
+        <% if (p.photos && p.photos.length) { %>
+          <div class="photo-preview">
+            <% p.photos.forEach(photo => { %>
+              <img src="<%= photo %>" alt="Park Photo">
+            <% }); %>
+          </div>
+        <% } %>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p style="text-align:center;">No parks added yet. Use the form below to add one.</p>
 
-    <label for="parkPhotos">Park Photos:</label>
-    <input type="file" id="parkPhotos" name="parkPhotos" accept="image/*" multiple>
-     <label>
-      <input type="checkbox" id="status" name="status">
-      Is Survey Completed
-    </label>
+    <form action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/park" method="POST" enctype="multipart/form-data">
+      <label for="name">Park Name:</label>
+      <input type="text" id="name" name="name" required>
 
-    <button type="submit">Submit</button>
-  </form>
+      <label for="areaSize">Area Size (sqm):</label>
+      <input type="number" id="areaSize" name="areaSize" required>
+
+      <label for="facilities">Facilities:</label>
+      <input type="text" id="facilities" name="facilities" required>
+
+      <label for="parkPhotos">Park Photos:</label>
+      <input type="file" id="parkPhotos" name="parkPhotos" accept="image/*" multiple>
+
+      <label>
+        <input type="checkbox" id="status" name="status">
+        Is Survey Completed
+      </label>
+
+      <button type="submit">Submit</button>
+    </form>
+  <% } %>
 </body>
 </html>

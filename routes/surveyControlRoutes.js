@@ -96,10 +96,18 @@ router.post('/:surveyId/survey/parcel/:featureId', async (req, res) => {
 
 // Park Routes
 
-router.get('/:surveyId/survey/parcel/:parcelId/park', (req, res) => {
+router.get('/:surveyId/survey/parcel/:parcelId/park', async (req, res) => {
   const { parcelId } = req.params;
   const { surveyId } = req.params;
-  res.render('surveyor/parkDetails', { parcelId, surveyId });
+  let park = await Park.findAll({ where: { parcelId: parcelId } });
+  if (park.length > 0) {
+    res.render('surveyor/parkDetails', { parcelId, surveyId, park });
+  } else {
+    let park = []
+    res.render('surveyor/parkDetails', { parcelId, surveyId, park });
+  }
+
+
 });
 
 router.post('/:surveyId/survey/parcel/:parcelId/park',
@@ -108,7 +116,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
     const { parcelId } = req.params;
     const { surveyId } = req.params;
     const { status } = req.body;
-    const { name, areaSize, parkType } = req.body;
+    const { name, areaSize, facilities } = req.body;
 
     try {
 
@@ -120,12 +128,12 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
         shapefile.status = status;
         await shapefile.save();
       }
-        const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
+      const photoUrls = req.files?.map(file => `/uploads/${file.filename}`) || [];
 
       if (park) {
         park.name = name;
         park.areaSize = areaSize || null;
-        park.parkType = parkType;
+        park.facilities = facilities;
         if (photoUrls) park.photos = photoUrls;
         await park.save();
       } else {
@@ -133,7 +141,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
           parcelId: parcelId,
           name,
           areaSize,
-          parkType,
+          facilities,
           photos: photoUrls
         });
       }
@@ -148,11 +156,17 @@ router.post('/:surveyId/survey/parcel/:parcelId/park',
 
 // Street Routes
 
-router.get('/:surveyId/survey/parcel/:parcelId/street', (req, res) => {
+router.get('/:surveyId/survey/parcel/:parcelId/street', async (req, res) => {
   const { parcelId } = req.params;
   const { surveyId } = req.params;
 
-  res.render('surveyor/streetDetails', { parcelId, surveyId });
+  let streets = await Street.findAll({ where: { parcelId: parcelId } });
+  if (streets.length > 0) {
+    res.render('surveyor/streetDetails', { parcelId, surveyId, streets });
+  } else {
+    let street = []
+    res.render('surveyor/streetDetails', { parcelId, surveyId, streets });
+  }
 });
 
 router.post('/:surveyId/survey/parcel/:parcelId/street',
