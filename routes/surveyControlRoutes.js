@@ -80,23 +80,19 @@ router.post('/:surveyId/survey/parcel/:featureId', async (req, res) => {
 
   try {
     let parcel = await Parcel.findOne({ where: { featureId } });
-    if (parcel) {
+    const parcelId = parcel.id;
+    if (parcelId) {
       if (parcel.type === 'park') {
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/park`);
+        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/park`);
       } else if (parcel.type === 'plot') {
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/plot`);
+        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot`);
       } else if (parcel.type === 'street') {
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/street`);
+        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/street`);
       }
     } else {
       await Parcel.create({ featureId, type });
-      if (type === 'park') {
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/park`);
-      } else if (type === 'plot') {
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/plot`);
-      } else if (type === 'street') {
-        res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcel.id}/street`);
-      }
+      res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${featureId}`);
+
     }
 
   } catch (error) {
@@ -279,7 +275,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
 
       const photoUrls = [];
 
-       if (req.files && req.files.length > 0) {
+      if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
             const result = await streamUpload(file.buffer);
@@ -356,7 +352,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
     try {
       const photoUrls = [];
 
-       if (req.files && req.files.length > 0) {
+      if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
             const result = await streamUpload(file.buffer);
@@ -415,7 +411,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
     try {
       const photoUrls = [];
 
-       if (req.files && req.files.length > 0) {
+      if (req.files && req.files.length > 0) {
         for (const file of req.files) {
           try {
             const result = await streamUpload(file.buffer);

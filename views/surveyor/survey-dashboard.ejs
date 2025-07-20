@@ -12,7 +12,7 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Roboto', 'Montserrat', 'Raleway', sans-serif;
+            font-family: 'Raleway', sans-serif;
             background-color: #f4f4f4;
         }
 
@@ -26,7 +26,7 @@
             background: #243b55;
             color: white;
             text-align: center;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Raleway', sans-serif;
         }
 
         .back-link {
@@ -81,15 +81,22 @@
                         };
                     },
                     onEachFeature: (feature, layer) => {
-                        console.log(feature.properties.status);
+
                         layer.on('click', () => {
                             const featureId = feature.properties.id;
-                            window.location.href = `/editor/surveys/<%= survey.id %>/survey/parcel/${featureId}`;
+                            if (featureId) {
+                                window.location.href = `/editor/surveys/<%= survey.id %>/survey/parcel/${featureId}`;
+                            } else {
+                                layer.bindTooltip(feature.properties.id);
+                            }
+
                         });
                     }
                 }).addTo(map);
 
-                map.fitBounds(layer.getBounds());
+                map.fitBounds(layer.getBounds(), {
+                    maxZoom: 20
+                });
             })
             .catch(err => {
                 console.error(err);
