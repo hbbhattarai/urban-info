@@ -80,8 +80,9 @@ router.post('/:surveyId/survey/parcel/:featureId', async (req, res) => {
 
   try {
     let parcel = await Parcel.findOne({ where: { featureId } });
-    const parcelId = parcel.id;
-    if (parcelId) {
+    if (parcel) {
+      const parcelId = parcel.id;
+      console.log(parcelId);
       if (parcel.type === 'park') {
         res.redirect(`/editor/surveys/${surveyId}/survey/parcel/${parcelId}/park`);
       } else if (parcel.type === 'plot') {
