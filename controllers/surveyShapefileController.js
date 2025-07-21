@@ -19,15 +19,15 @@ exports.getData = async (req, res) => {
     const shapefiles = await ShapefileModel.findAll({
       where: { survey_id: req.params.surveyId },
     });
-  
+
 
     const geojson = {
       type: 'FeatureCollection',
       features: shapefiles.map(record => ({
         type: 'Feature',
-        properties: { id: record.id ,status : record.status,},
+        properties: { id: record.id, status: record.status, },
         geometry: record.geometry,
-        
+
       }))
     };
     res.json(geojson);
@@ -81,7 +81,7 @@ exports.uploadShapefile = async (req, res) => {
 
     // Read and define source projection
     const prjContent = fs.readFileSync(prjPath, 'utf8');
-    const sourceProj = proj4(prjContent); // assumes WKT parsing is supported
+    const sourceProj = proj4(prjContent);
     const wgs84 = proj4('EPSG:4326');
 
     const source = await shapefile.open(shpPath, dbfPath);
@@ -91,14 +91,19 @@ exports.uploadShapefile = async (req, res) => {
       if (result.done) break;
 
       const transformedGeometry = transformToWGS84(result.value.geometry, sourceProj, wgs84);
-
+      const plotID = result.value.properties.PlotID
+      const area = result.value.properties.Area;
+      const CIDNo = result.value.properties.CIDNo;
       await ShapefileModel.create({
         survey_id: surveyId,
         geometry: transformedGeometry,
+        plotID: plotID,
+        area: area,
+        CIDNo: CIDNo,
         status: false,
       });
     }
-
+322162
     // Cleanup uploaded files
     fs.unlinkSync(shpPath);
     fs.unlinkSync(dbfPath);

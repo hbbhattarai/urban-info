@@ -14,6 +14,15 @@ const Shapefile = sequelize.define('Shapefile', {
     type: DataTypes.GEOMETRY('POLYGON'), // Adjust type based on your shapefile geometry
     allowNull: false,
   },
+  area: {
+    type: DataTypes.STRING,
+  },
+  plotID: {
+    type: DataTypes.STRING,
+  },
+  CIDNo: {
+    type: DataTypes.STRING,
+  },
   status: {
     type: DataTypes.BOOLEAN,
   },
