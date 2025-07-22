@@ -210,6 +210,7 @@
 
                         <label>Usage:</label>
                         <select id="usage" name="usage" required>
+                            <option value="">-- Select Usage --</option>
                             <option value="Mixed" <%=editUnit?.usage?.includes('Mixed') ? 'selected' : '' %>
                                 >Residential + Commercial</option>
                             <option value="Residential" <%=editUnit?.usage?.includes('Residential') ? 'selected' : '' %>
@@ -228,6 +229,8 @@
                             <option value="Office" <%=editUnit?.usage?.includes('Office') ? 'selected' : '' %>>Office
                             </option>
                             <option value="Storage" <%=editUnit?.usage?.includes('Storage') ? 'selected' : '' %>>Storage
+                            </option>
+                            <option value="Others" <%=editUnit?.usage?.includes('Others') ? 'selected' : '' %>>Others
                             </option>
                         </select>
 
