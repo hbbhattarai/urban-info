@@ -629,13 +629,13 @@ router.get('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId
 
 router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/completed', async (req, res) => {
   const { parcelId, surveyId } = req.params;
+  const { status } = req.body;
 
   try {
     let parcel = await Parcel.findOne({ where: { id: parcelId } });
     let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
     if (shapefile) {
-      shapefile.status === 'on';
-      shapefile.isProgress === 'off';
+      shapefile.isProgress =  status === 'off';
       await shapefile.save();
     }
     res.redirect(`/editor/surveys/view/${surveyId}`);

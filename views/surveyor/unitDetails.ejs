@@ -190,7 +190,20 @@
                         </select>
 
                         <label>Floor:</label>
-                        <input name="floor" value="<%= editUnit?.floor || '' %>" required />
+                        <select name="floor" id="floor" required>
+                            <option value="">-- Select Floor --</option>
+                            <option value="G" <%=editUnit?.floor==='G' ? 'selected' : '' %>>G</option>
+                            <option value="G+1" <%=editUnit?.floor==='G+1' ? 'selected' : '' %>>G+1</option>
+                            <option value="G+2" <%=editUnit?.floor==='G+2' ? 'selected' : '' %>>G+2</option>
+                            <option value="G+3" <%=editUnit?.floor==='G+3' ? 'selected' : '' %>>G+3</option>
+                            <option value="G+4" <%=editUnit?.floor==='G+4' ? 'selected' : '' %>>G+4</option>
+                            <option value="G+5" <%=editUnit?.floor==='G+5' ? 'selected' : '' %>>G+5</option>
+                            <option value="G+6" <%=editUnit?.floor==='G+6' ? 'selected' : '' %>>G+6</option>
+                            <option value="G+7" <%=editUnit?.floor==='G+7' ? 'selected' : '' %>>G+7</option>
+                            <option value="G+8" <%=editUnit?.floor==='G+8' ? 'selected' : '' %>>G+8</option>
+                            <option value="B" <%=editUnit?.floor==='B' ? 'selected' : '' %>>B</option>
+                            <option value="B+1" <%=editUnit?.floor==='B+1' ? 'selected' : '' %>>B+1</option>
+                        </select>
 
                         <label>Area: (Sq. Meters) </label>
                         <input name="area" value="<%= editUnit?.area || '' %>" required />
@@ -274,7 +287,7 @@
                             <% } else { %>
                                 <p>No interior photos available.</p>
                                 <% } %>
-                                    <input type="file" name="interiorPhotos" multiple  />
+                                    <input type="file" name="interiorPhotos" multiple />
 
                                     <label>Signboard Photos:</label>
 
@@ -287,9 +300,9 @@
                                         </div>
                                         <% } else { %>
                                             <p>No signboard photos available.</p>
-                                           
+
                                             <% } %>
-                                             <input type="file" name="signboardPhotos" multiple  />
+                                                <input type="file" name="signboardPhotos" multiple />
                                                 <button type="submit">
                                                     <%= editUnit ? "Update" : "Add" %> Unit
                                                 </button>
