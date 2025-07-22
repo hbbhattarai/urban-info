@@ -25,7 +25,7 @@ exports.getData = async (req, res) => {
       type: 'FeatureCollection',
       features: shapefiles.map(record => ({
         type: 'Feature',
-        properties: { id: record.id, status: record.status, },
+        properties: { id: record.id, status: record.status, isProgress: record.isProgress },
         geometry: record.geometry,
 
       }))
@@ -101,6 +101,7 @@ exports.uploadShapefile = async (req, res) => {
         area: area,
         CIDNo: CIDNo,
         status: false,
+        isProgress: false,
       });
     }
 322162

@@ -366,6 +366,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
       }
 
       await Building.create({
+        plotId,
         identifier,
         ownerCid,
         contact,
@@ -429,6 +430,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
       if (!building) return res.status(404).send('Building not found');
 
       Object.assign(building, {
+        plotId,
         identifier,
         ownerCid,
         contact,
