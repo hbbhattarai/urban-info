@@ -196,7 +196,9 @@
                         <input name="area" value="<%= editUnit?.area || '' %>" required />
 
                         <label>Usage:</label>
-                        <select id="usage" name="usage"  required>
+                        <select id="usage" name="usage" required>
+                            <option value="Mixed" <%=editUnit?.usage?.includes('Mixed') ? 'selected' : '' %>
+                                >Residential + Commercial</option>
                             <option value="Residential" <%=editUnit?.usage?.includes('Residential') ? 'selected' : '' %>
                                 >Residential</option>
                             <option value="Grocery" <%=editUnit?.usage?.includes('Grocery') ? 'selected' : '' %>>Grocery
@@ -272,7 +274,7 @@
                             <% } else { %>
                                 <p>No interior photos available.</p>
                                 <% } %>
-                                    <input type="file" name="interiorPhotos" multiple required />
+                                    <input type="file" name="interiorPhotos" multiple  />
 
                                     <label>Signboard Photos:</label>
 
@@ -285,8 +287,9 @@
                                         </div>
                                         <% } else { %>
                                             <p>No signboard photos available.</p>
-                                            <input type="file" name="signboardPhotos" multiple required />
+                                           
                                             <% } %>
+                                             <input type="file" name="signboardPhotos" multiple  />
                                                 <button type="submit">
                                                     <%= editUnit ? "Update" : "Add" %> Unit
                                                 </button>
