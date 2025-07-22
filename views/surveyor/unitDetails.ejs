@@ -190,52 +190,76 @@
                         </select>
 
                         <label>Floor:</label>
-                        <input name="floor" value="<%= editUnit?.floor || '' %>" />
+                        <input name="floor" value="<%= editUnit?.floor || '' %>" required />
 
-                        <label>Area:</label>
-                        <input name="area" value="<%= editUnit?.area || '' %>" />
+                        <label>Area: (Sq. Meters) </label>
+                        <input name="area" value="<%= editUnit?.area || '' %>" required />
 
                         <label>Usage:</label>
-                        <input name="usage" value="<%= editUnit?.usage || '' %>" />
+                        <select id="usage" name="usage"  required>
+                            <option value="Residential" <%=editUnit?.usage?.includes('Residential') ? 'selected' : '' %>
+                                >Residential</option>
+                            <option value="Grocery" <%=editUnit?.usage?.includes('Grocery') ? 'selected' : '' %>>Grocery
+                            </option>
+                            <option value="Panshop" <%=editUnit?.usage?.includes('Panshop') ? 'selected' : '' %>>Panshop
+                            </option>
+                            <option value="Cafe" <%=editUnit?.usage?.includes('Cafe') ? 'selected' : '' %>>Cafe</option>
+                            <option value="Restaurant" <%=editUnit?.usage?.includes('Restaurant') ? 'selected' : '' %>
+                                >Restaurant</option>
+                            <option value="Pharmacy" <%=editUnit?.usage?.includes('Pharmacy') ? 'selected' : '' %>
+                                >Pharmacy</option>
+                            <option value="Clothing Store" <%=editUnit?.usage?.includes('Clothing Store') ? 'selected'
+                                : '' %>>Clothing Store</option>
+                            <option value="Office" <%=editUnit?.usage?.includes('Office') ? 'selected' : '' %>>Office
+                            </option>
+                            <option value="Storage" <%=editUnit?.usage?.includes('Storage') ? 'selected' : '' %>>Storage
+                            </option>
+                        </select>
 
-                        <label>Rent:</label>
-                        <input name="rent" value="<%= editUnit?.rent || '' %>" />
+                        <label>Rent (Nu.)</label>
+                        <input name="rent" value="<%= editUnit?.rent || '' %>" required />
 
                         <label>Tenant Name:</label>
-                        <input name="tenantName" value="<%= editUnit?.tenantName || '' %>" />
+                        <input name="tenantName" value="<%= editUnit?.tenantName || '' %>" required />
 
                         <label>Tenant Origin:</label>
-                        <input name="tenantOrigin" value="<%= editUnit?.tenantOrigin || '' %>" />
+                        <input name="tenantOrigin" value="<%= editUnit?.tenantOrigin || '' %>" required />
 
                         <label>Tenancy Years:</label>
-                        <input name="tenancyYears" value="<%= editUnit?.tenancyYears || '' %>" />
+                        <input name="tenancyYears" value="<%= editUnit?.tenancyYears || '' %>" required />
 
                         <label>Rooms Count:</label>
-                        <input name="roomsCount" value="<%= editUnit?.roomsCount || '' %>" />
+                        <input name="roomsCount" value="<%= editUnit?.roomsCount || '' %>" required />
 
-                        <label>Family Size:</label>
-                        <input name="familySize" value="<%= editUnit?.familySize || '' %>" />
+                        <label>Family/Employee Size:</label>
+                        <input name="familySize" value="<%= editUnit?.familySize || '' %>" required />
 
-                        <label>Male Population:</label>
-                        <input name="malePopulation" value="<%= editUnit?.malePopulation || '' %>" />
+                        <label>Male Population/Employee:</label>
+                        <input name="malePopulation" value="<%= editUnit?.malePopulation || '' %>" required />
 
-                        <label>Female Population:</label>
-                        <input name="femalePopulation" value="<%= editUnit?.femalePopulation || '' %>" />
+                        <label>Female Population/Employee:</label>
+                        <input name="femalePopulation" value="<%= editUnit?.femalePopulation || '' %>" required />
 
                         <div id="residentialFields">
                             <label>Bedrooms:</label>
                             <input name="bedrooms" value="<%= editUnit?.bedrooms || '' %>" />
 
+                            <label>Halls:</label>
+                            <input name="halls" value="<%= editUnit?.halls || '' %>" />
+                            <label>Kitchens:</label>
+                            <input name="kitchens" value="<%= editUnit?.kitchens || '' %>" />
+                            <label>Balcony:</label>
+                            <input name="balcony" value="<%= editUnit?.balcony || '' %>" />
                             <label>Bathrooms:</label>
                             <input name="bathrooms" value="<%= editUnit?.bathrooms || '' %>" />
                         </div>
 
                         <div id="commercialFields">
                             <label>Business Name:</label>
-                            <input name="businessName" value="<%= editUnit?.businessName || '' %>" />
+                            <input name="businessName" value="<%= editUnit?.businessName || '' %>" required />
 
                             <label>License Number:</label>
-                            <input name="licenseNumber" value="<%= editUnit?.licenseNumber || '' %>" />
+                            <input name="licenseNumber" value="<%= editUnit?.licenseNumber || '' %>" required />
                         </div>
 
                         <label>Interior Photos:</label>
@@ -248,7 +272,7 @@
                             <% } else { %>
                                 <p>No interior photos available.</p>
                                 <% } %>
-                                    <input type="file" name="interiorPhotos" multiple />
+                                    <input type="file" name="interiorPhotos" multiple required />
 
                                     <label>Signboard Photos:</label>
 
@@ -261,7 +285,7 @@
                                         </div>
                                         <% } else { %>
                                             <p>No signboard photos available.</p>
-                                            <input type="file" name="signboardPhotos" multiple />
+                                            <input type="file" name="signboardPhotos" multiple required />
                                             <% } %>
                                                 <button type="submit">
                                                     <%= editUnit ? "Update" : "Add" %> Unit

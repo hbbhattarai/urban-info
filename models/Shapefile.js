@@ -26,6 +26,9 @@ const Shapefile = sequelize.define('Shapefile', {
   status: {
     type: DataTypes.BOOLEAN,
   },
+  isProgress: {
+    type: DataTypes.BOOLEAN,
+  },
 }, {
   tableName: 'Shapefiles',
   timestamps: true,

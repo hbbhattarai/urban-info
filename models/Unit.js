@@ -59,7 +59,15 @@ const Unit = sequelize.define('Unit', {
   bedrooms: { 
     type: DataTypes.INTEGER 
   },
-
+  halls: { 
+    type: DataTypes.INTEGER 
+  },
+  kitchens: { 
+    type: DataTypes.INTEGER 
+  },
+  balcony: { 
+    type: DataTypes.INTEGER 
+  },
   bathrooms: { 
     type: DataTypes.INTEGER 
   },

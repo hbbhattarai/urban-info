@@ -288,6 +288,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
 
       if (shapefile) {
         shapefile.status = status === 'on';
+        shapefile.isProgress = status === 'on';
         await shapefile.save();
       }
 
@@ -341,8 +342,9 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
   async (req, res) => {
     const { surveyId, parcelId, plotId } = req.params;
     const {
-      name,
+      identifier,
       ownerCid,
+      contact,
       yearBuilt,
       storeys,
       structureType,
@@ -364,9 +366,9 @@ router.post('/:surveyId/survey/parcel/:parcelId/building/:plotId/add',
       }
 
       await Building.create({
-        plotId,
-        name,
+        identifier,
         ownerCid,
+        contact,
         yearBuilt,
         storeys,
         structureType,
@@ -400,8 +402,9 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
   async (req, res) => {
     const { surveyId, parcelId, plotId, buildingId } = req.params;
     const {
-      name,
+      identifier,
       ownerCid,
+      contact,
       yearBuilt,
       storeys,
       structureType,
@@ -426,8 +429,9 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
       if (!building) return res.status(404).send('Building not found');
 
       Object.assign(building, {
-        name,
+        identifier,
         ownerCid,
+        contact,
         yearBuilt,
         storeys,
         structureType,
@@ -520,6 +524,9 @@ router.post(
       malePopulation,
       femalePopulation,
       bedrooms,
+      halls,
+      kitchens,
+      balcony,
       bathrooms,
       businessName,
       licenseNumber
@@ -566,6 +573,9 @@ router.post(
         malePopulation,
         femalePopulation,
         bedrooms: (useType === 'Residential' || useType === 'Both') ? bedrooms : null,
+        halls: (useType === 'Residential' || useType === 'Both') ? halls : null,
+        kitchens: (useType === 'Residential' || useType === 'Both') ? kitchens : null,
+        balcony: (useType === 'Residential' || useType === 'Both') ? balcony : null,
         bathrooms: (useType === 'Residential' || useType === 'Both') ? bathrooms : null,
         businessName: (useType === 'Commercial' || useType === 'Both') ? businessName : null,
         licenseNumber: (useType === 'Commercial' || useType === 'Both') ? licenseNumber : null,
@@ -609,6 +619,25 @@ router.get('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId
       buildingId,
       unit
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingId/completed', async (req, res) => {
+  const { parcelId, surveyId } = req.params;
+
+  try {
+    let parcel = await Parcel.findOne({ where: { id: parcelId } });
+    let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
+    if (shapefile) {
+      shapefile.status === 'on';
+      shapefile.isProgress === 'off';
+      await shapefile.save();
+    }
+    res.redirect(`/editor/surveys/view/${surveyId}`);
+
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

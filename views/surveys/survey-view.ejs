@@ -68,18 +68,16 @@
                     style: (feature) => {
 
                         return {
-                            color: 'black', // border color
+                            color: 'black',
                             weight: 1,
-                            fillColor: feature.properties.status == true ? 'green' : 'red',
+                            fillColor: feature.properties.isProgress === true
+                                ? 'yellow'
+                                : (feature.properties.status === true ? 'green' : 'red'),
                             fillOpacity: 0.6
                         };
                     },
                     onEachFeature: (feature, layer) => {
-                        console.log(feature.properties.status);
-                        layer.on('click', () => {
-                            const featureId = feature.properties.id;
-                            window.location.href = `/editor/surveys/<%= survey.id %>/survey/parcel/${featureId}`;
-                        });
+                        layer.bindTooltip(feature.properties.id);
                     }
                 }).addTo(map);
 

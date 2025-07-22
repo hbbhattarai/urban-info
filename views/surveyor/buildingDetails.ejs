@@ -42,7 +42,30 @@
     }
 
     .actions {
-      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+
+    .actions-button {
+      display: inline-block;
+      padding: 8px 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .actions-button:hover {
+      background-color: #45a049;
+    }
+
+    .actions-form {
+      margin: 0;
     }
 
     .actions a {
@@ -55,6 +78,8 @@
       border-radius: 4px;
       font-size: 14px;
     }
+
+
 
     form {
       max-width: 600px;
@@ -114,10 +139,13 @@
     <% if (building?.length) { %>
       <% building.forEach((bld, idx)=> { %>
         <div class="building-card">
-          <h2>Building <%= idx + 1 %>: <%= bld.name %>
+          <h2>Building identifier: <%= bld.identifier %>
           </h2>
           <p><strong>Owner CID:</strong>
             <%= bld.ownerCid %>
+          </p>
+          <p><strong>Owner Contact:</strong>
+            <%= bld.contact %>
           </p>
           <p><strong>Year Built:</strong>
             <%= bld.yearBuilt %>
@@ -146,6 +174,12 @@
                 <a
                   href="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot/<%= bld.plotId %>/building/<%= bld.id %>/units">View
                   Units</a>
+                <form class="actions-form"
+                  action="/editor/surveys/<%= surveyId %>/survey/parcel/<%= parcelId %>/plot/<%= bld.plotId %>/building/<%= bld.id %>/completed"
+                  method="POST" style="display: inline;">
+                  <button type="submit" class="actions-button">Mark Survey Completed</button>
+                </form>
+
               </div>
         </div>
         <% }) %>
@@ -156,7 +190,7 @@
 
   <% const isEdit=!!editBuilding; %>
 
-    <form action="<%= isEdit 
+    <form class="normal-form" action="<%= isEdit 
   ? `/editor/surveys/${surveyId}/survey/parcel/${parcelId}/plot/${editBuilding.plotId}/building/${editBuilding.id}/edit`
   : `/editor/surveys/${surveyId}/survey/parcel/${parcelId}/building/${plotId}/add` 
 %>" method="POST" enctype="multipart/form-data">
@@ -165,11 +199,14 @@
         <%= isEdit ? 'Edit Building' : 'Add New Building' %>
       </h2>
 
-      <label for="name">Building Name:</label>
-      <input type="text" id="name" name="name" required value="<%= isEdit ? editBuilding.name : '' %>">
+      <label for="identifier">Building Identifier:</label>
+      <input type="text" id="identifier" name="identifier" required
+        value="<%= isEdit ? editBuilding.identifier : '' %>">
 
       <label for="ownerCid">Owner CID:</label>
       <input type="text" id="ownerCid" name="ownerCid" required value="<%= isEdit ? editBuilding.ownerCid : '' %>">
+      <label for="Contact">Owner Contact:</label>
+      <input type="text" id="contact" name="contact" required value="<%= isEdit ? editBuilding.contact : '' %>">
 
       <label for="yearBuilt">Year Built:</label>
       <input type="number" id="yearBuilt" name="yearBuilt" required value="<%= isEdit ? editBuilding.yearBuilt : '' %>">
@@ -178,8 +215,12 @@
       <input type="number" id="storeys" name="storeys" required value="<%= isEdit ? editBuilding.storeys : '' %>">
 
       <label for="structureType">Structure Type:</label>
-      <input type="text" id="structureType" name="structureType" required
-        value="<%= isEdit ? editBuilding.structureType : '' %>">
+      <select id="structureType" name="structureType" required>
+        <option value="">-- Select Structure Type --</option>
+        <option value="Framed" <%=isEdit && editBuilding.structureType==='Framed' ? 'selected' : '' %>>Framed</option>
+        <option value="Load Bearing" <%=isEdit && editBuilding.structureType==='Load Bearing' ? 'selected' : '' %>>Load
+          Bearing</option>
+      </select>
 
       <label>
         <input type="checkbox" id="retrofitReady" name="retrofitReady" <%=isEdit && editBuilding.retrofitReady

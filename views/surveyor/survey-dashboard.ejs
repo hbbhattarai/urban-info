@@ -74,9 +74,11 @@
                     style: (feature) => {
 
                         return {
-                            color: 'black', // border color
+                            color: 'black',
                             weight: 1,
-                            fillColor: feature.properties.status == true ? 'green' : 'red',
+                            fillColor: feature.properties.isProgress === true
+                                ? 'yellow'
+                                : (feature.properties.status === true ? 'green' : 'red'),
                             fillOpacity: 0.6
                         };
                     },

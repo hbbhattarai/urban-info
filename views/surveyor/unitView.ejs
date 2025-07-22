@@ -145,6 +145,9 @@
 
         <% if (unit.useType === 'Residential' || unit.useType === 'Both') { %>
             <p>Bedrooms: <%= unit.bedrooms || 'N/A' %></p>
+            <p>Halls: <%= unit.halls || 'N/A' %></p>
+            <p>Kitchens: <%= unit.kitchens || 'N/A' %></p>
+            <p>Balcony: <%= unit.balcony || 'N/A' %></p>
             <p>Bathrooms: <%= unit.bathrooms || 'N/A' %></p>
         <% } %>
 
