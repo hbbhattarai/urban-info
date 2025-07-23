@@ -102,7 +102,7 @@
                 // Calculate the bounds zoom level first
                 const bounds = layer.getBounds();
 
-                const targetZoom = map.getBoundsZoom(bounds) + 4;
+                const targetZoom = map.getBoundsZoom(bounds);
 
                 // Now set view manually with the new zoom level
                 map.setView(bounds.getCenter(), targetZoom);
