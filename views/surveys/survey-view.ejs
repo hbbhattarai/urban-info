@@ -57,11 +57,11 @@
         // Satellite basemap (Esri)
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles © Esri',
-            maxZoom: 18
+            maxZoom: 40
         }).addTo(map);
 
         // Fetch and add GeoJSON
-        fetch('/admin/surveys/shapefile/get-data/<%= survey.id %>')
+        fetch('/editor/surveys/get-data/<%= survey.id %>')
             .then(res => res.json())
             .then(data => {
                 const layer = L.geoJSON(data, {
@@ -77,11 +77,26 @@
                         };
                     },
                     onEachFeature: (feature, layer) => {
-                        layer.bindTooltip(feature.properties.id);
+
+                        layer.on('click', () => {
+                            const featureId = feature.properties.id;
+                            if (featureId) {
+                                window.location.href = `/editor/surveys/<%= survey.id %>/survey/parcel/${featureId}`;
+                            } else {
+                                layer.bindTooltip(feature.properties.id);
+                            }
+
+                        });
                     }
                 }).addTo(map);
 
-                map.fitBounds(layer.getBounds());
+                // Calculate the bounds zoom level first
+                const bounds = layer.getBounds();
+                
+                const targetZoom = map.getBoundsZoom(bounds) +10;
+
+                // Now set view manually with the new zoom level
+                map.setView(bounds.getCenter(), targetZoom);
             })
             .catch(err => {
                 console.error(err);

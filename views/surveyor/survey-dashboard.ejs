@@ -83,7 +83,10 @@
                         };
                     },
                     onEachFeature: (feature, layer) => {
-
+                        const plotId = feature.properties.area ;
+                        layer.bindTooltip(plotId, {
+                            permanent: true,      // Always show label
+                        });
                         layer.on('click', () => {
                             const featureId = feature.properties.id;
                             if (featureId) {
@@ -98,8 +101,8 @@
 
                 // Calculate the bounds zoom level first
                 const bounds = layer.getBounds();
-                
-                const targetZoom = map.getBoundsZoom(bounds) +10;
+
+                const targetZoom = map.getBoundsZoom(bounds) + 4;
 
                 // Now set view manually with the new zoom level
                 map.setView(bounds.getCenter(), targetZoom);

@@ -25,7 +25,7 @@ exports.getData = async (req, res) => {
       type: 'FeatureCollection',
       features: shapefiles.map(record => ({
         type: 'Feature',
-        properties: { id: record.id, status: record.status, isProgress: record.isProgress },
+        properties: { id: record.id, status: record.status, isProgress: record.isProgress, area: record.Area, plotId : record.plotID },
         geometry: record.geometry,
 
       }))
