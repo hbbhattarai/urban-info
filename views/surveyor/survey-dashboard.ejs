@@ -83,8 +83,8 @@
                         };
                     },
                     onEachFeature: (feature, layer) => {
-                        const plotId = feature.properties.area ;
-                        layer.bindTooltip(plotId, {
+                        const area = feature.properties.area ;
+                        layer.bindTooltip(area, {
                             permanent: true,      // Always show label
                         });
                         layer.on('click', () => {
