@@ -11,11 +11,7 @@ const Unit = sequelize.define('Unit', {
     type: DataTypes.ENUM('Residential', 'Commercial', 'Both'),
     allowNull: false
   },
-
   floor: {
-    type: DataTypes.STRING
-  },
-  remarks: {
     type: DataTypes.STRING
   },
 
@@ -26,7 +22,9 @@ const Unit = sequelize.define('Unit', {
   usage: {
     type: DataTypes.STRING
   },
-
+  remarks: {
+    type: DataTypes.STRING
+  },
   rent: {
     type: DataTypes.DECIMAL
   },
