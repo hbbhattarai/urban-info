@@ -14,11 +14,9 @@ const Unit = sequelize.define('Unit', {
   floor: {
     type: DataTypes.STRING
   },
-
   area: {
     type: DataTypes.STRING
   },
-
   usage: {
     type: DataTypes.STRING
   },
@@ -26,9 +24,8 @@ const Unit = sequelize.define('Unit', {
     type: DataTypes.STRING
   },
   rent: {
-    type: DataTypes.DECIMAL
+    type: DataTypes.INTEGER
   },
-
   tenantName: {
     type: DataTypes.STRING
   },

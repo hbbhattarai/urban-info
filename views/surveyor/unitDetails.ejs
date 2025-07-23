@@ -192,16 +192,21 @@
                         <label>Floor:</label>
                         <select name="floor" id="floor" required>
                             <option value="">-- Select Floor --</option>
-                            <option value="Ground" <%=editUnit?.floor==='Ground' ? 'selected' : '' %>>Ground Floor</option>
+                            <option value="Ground" <%=editUnit?.floor==='Ground' ? 'selected' : '' %>>Ground Floor
+                            </option>
                             <option value="First" <%=editUnit?.floor==='First' ? 'selected' : '' %>>First Floor</option>
-                            <option value="Second" <%=editUnit?.floor==='Second' ? 'selected' : '' %>>Second Floor</option>
+                            <option value="Second" <%=editUnit?.floor==='Second' ? 'selected' : '' %>>Second Floor
+                            </option>
                             <option value="Third" <%=editUnit?.floor==='Third' ? 'selected' : '' %>>Thrid Floor</option>
-                            <option value="Fourth" <%=editUnit?.floor==='Fourth' ? 'selected' : '' %>>Fourth Floor</option>
+                            <option value="Fourth" <%=editUnit?.floor==='Fourth' ? 'selected' : '' %>>Fourth Floor
+                            </option>
                             <option value="Fifth" <%=editUnit?.floor==='Fifth' ? 'selected' : '' %>>Fifth Floor</option>
                             <option value="Sixth" <%=editUnit?.floor==='Sixth' ? 'selected' : '' %>>Sixth Floor</option>
-                            <option value="Seventh" <%=editUnit?.floor==='Seventh' ? 'selected' : '' %>>Seventh Floor</option>
+                            <option value="Seventh" <%=editUnit?.floor==='Seventh' ? 'selected' : '' %>>Seventh Floor
+                            </option>
                             <option value="Eight" <%=editUnit?.floor==='Eight' ? 'selected' : '' %>>Eight Floor</option>
-                            <option value="Basement" <%=editUnit?.floor==='Basement' ? 'selected' : '' %>>Basement</option>
+                            <option value="Basement" <%=editUnit?.floor==='Basement' ? 'selected' : '' %>>Basement
+                            </option>
                         </select>
 
                         <label>Area: (Sq. Meters) </label>
@@ -234,52 +239,58 @@
                         </select>
 
                         <label> Remarks </label>
-                        <input name="remarks" value="<%= editUnit?.remarks || '' %>"  />
+                        <select name="remarks" id="remarks" required>
+                              <option value="">-- Select Remarks --</option>
+                            <option value="Vacant" <%=editUnit?.remarks==='Vacant' ? 'selected' : '' %>
+                                > Vacant </option>
+                            <option value="Occupied" <%=editUnit?.remarks==='Occupied' ? 'selected' : '' %>
+                                > Occupied </option>
+                        </select>
 
                         <label>Rent (Nu.)</label>
-                        <input name="rent" value="<%= editUnit?.rent || '' %>"  />
+                        <input name="rent" value="<%= editUnit?.rent || '0' %>" />
 
                         <label>Tenant Name:</label>
-                        <input name="tenantName" value="<%= editUnit?.tenantName || '' %>"  />
+                        <input name="tenantName" value="<%= editUnit?.tenantName || '' %>" />
 
                         <label>Tenant Origin: (Census Origin)</label>
-                        <input name="tenantOrigin" value="<%= editUnit?.tenantOrigin || '' %>"  />
+                        <input name="tenantOrigin" value="<%= editUnit?.tenantOrigin || '' %>" />
 
                         <label>Tenancy Years:</label>
-                        <input name="tenancyYears" value="<%= editUnit?.tenancyYears || '' %>"  />
+                        <input name="tenancyYears" value="<%= editUnit?.tenancyYears || '0' %>" />
 
                         <label>Rooms Count (If Hotels Add all room counts) </label>
-                        <input name="roomsCount" value="<%= editUnit?.roomsCount || '' %>"  />
+                        <input name="roomsCount" value="<%= editUnit?.roomsCount || '0' %>" />
 
                         <label>Family/Employee Size:</label>
-                        <input name="familySize" value="<%= editUnit?.familySize || '' %>"  />
+                        <input name="familySize" value="<%= editUnit?.familySize || '0' %>" />
 
                         <label>Male Population/Employee:</label>
-                        <input name="malePopulation" value="<%= editUnit?.malePopulation || '' %>"  />
+                        <input name="malePopulation" value="<%= editUnit?.malePopulation || '0' %>" />
 
                         <label>Female Population/Employee:</label>
-                        <input name="femalePopulation" value="<%= editUnit?.femalePopulation || '' %>"  />
+                        <input name="femalePopulation" value="<%= editUnit?.femalePopulation || '0' %>" />
 
                         <div id="residentialFields">
                             <label>Bedrooms:</label>
-                            <input name="bedrooms" value="<%= editUnit?.bedrooms || '' %>" />
+                            <input name="bedrooms" value="<%= editUnit?.bedrooms || '0' %>" />
 
                             <label>Halls:</label>
-                            <input name="halls" value="<%= editUnit?.halls || '' %>" />
+                            <input name="halls" value="<%= editUnit?.halls || '0' %>" />
                             <label>Kitchens:</label>
-                            <input name="kitchens" value="<%= editUnit?.kitchens || '' %>" />
+                            <input name="kitchens" value="<%= editUnit?.kitchens || '0' %>" />
                             <label>Balcony:</label>
-                            <input name="balcony" value="<%= editUnit?.balcony || '' %>" />
+                            <input name="balcony" value="<%= editUnit?.balcony || '0' %>" />
                             <label>Bathrooms:</label>
-                            <input name="bathrooms" value="<%= editUnit?.bathrooms || '' %>" />
+                            <input name="bathrooms" value="<%= editUnit?.bathrooms || '0' %>" />
                         </div>
 
                         <div id="commercialFields">
                             <label>Business Name:</label>
-                            <input name="businessName" value="<%= editUnit?.businessName || '' %>"  />
+                            <input name="businessName" value="<%= editUnit?.businessName || '' %>" />
 
                             <label>License Number:</label>
-                            <input name="licenseNumber" value="<%= editUnit?.licenseNumber || '' %>"  />
+                            <input name="licenseNumber" value="<%= editUnit?.licenseNumber || '' %>" />
                         </div>
 
                         <label>Interior Photos:</label>

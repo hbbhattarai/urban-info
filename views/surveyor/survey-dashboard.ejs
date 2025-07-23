@@ -96,9 +96,12 @@
                     }
                 }).addTo(map);
 
-                map.fitBounds(layer.getBounds(), {
-                    maxZoom: 30
-                });
+                // Calculate the bounds zoom level first
+                const bounds = layer.getBounds();
+                const targetZoom = map.getBoundsZoom(bounds) + 5;
+
+                // Now set view manually with the new zoom level
+                map.setView(bounds.getCenter(), targetZoom);
             })
             .catch(err => {
                 console.error(err);

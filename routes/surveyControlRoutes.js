@@ -561,6 +561,7 @@ router.post(
       }
 
       const unitData = {};
+     
       Object.assign(unitData, {
         buildingId,
         useType,
@@ -591,7 +592,6 @@ router.post(
       if (signboardPhotos.length > 0) {
         unitData.signboardPhotos = signboardPhotos;
       }
-
       if (unitId) {
         const unit = await Unit.findByPk(unitId);
         if (!unit) return res.status(404).send('Unit not found');
