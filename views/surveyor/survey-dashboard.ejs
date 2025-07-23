@@ -58,12 +58,12 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        const map = L.map('map').setView([20, 0], 2); // Initial center
+        const map = L.map('map').setView([20, 0], 18); // Initial center
 
         // Satellite basemap (Esri)
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles © Esri',
-            maxZoom: 18
+            maxZoom: 40
         }).addTo(map);
 
         // Fetch and add GeoJSON
@@ -98,7 +98,8 @@
 
                 // Calculate the bounds zoom level first
                 const bounds = layer.getBounds();
-                const targetZoom = map.getBoundsZoom(bounds) + 5;
+                
+                const targetZoom = map.getBoundsZoom(bounds) +10;
 
                 // Now set view manually with the new zoom level
                 map.setView(bounds.getCenter(), targetZoom);

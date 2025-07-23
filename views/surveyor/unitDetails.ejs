@@ -239,13 +239,7 @@
                         </select>
 
                         <label> Remarks </label>
-                        <select name="remarks" id="remarks" required>
-                              <option value="">-- Select Remarks --</option>
-                            <option value="Vacant" <%=editUnit?.remarks==='Vacant' ? 'selected' : '' %>
-                                > Vacant </option>
-                            <option value="Occupied" <%=editUnit?.remarks==='Occupied' ? 'selected' : '' %>
-                                > Occupied </option>
-                        </select>
+                        <input name="remarks" value="<%= editUnit?.remarks || '' %>" />
 
                         <label>Rent (Nu.)</label>
                         <input name="rent" value="<%= editUnit?.rent || '0' %>" />
