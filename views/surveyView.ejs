@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Survey Report</title>
+
+  <!-- Google Fonts: Raleway -->
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f6fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    h1, h3, h3, h3, h5, h6 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .section {
+      background-color: #fff;
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .nested-section {
+      margin-top: 15px;
+      margin-bottom: 15px;
+      padding-left: 20px;
+      border-left: 4px solid #dcdde1;
+    }
+
+    .photo-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    p {
+      margin: 6px 0;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .section {
+        padding: 15px;
+      }
+
+      .photo-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+
+      img {
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Survey Report</h1>
+
+  <div class="section">
+    <h3>Survey: <%= survey.name %></h3>
+    <p><strong>Description:</strong> <%= survey.description %></p>
+  </div>
+
+  <% survey.Shapefiles.forEach((shapefile, index) => { %>
+    <div class="section">
+      <h3> Geographic Feature ID: <%= shapefile.id %></h3>
+      <p><strong>Area:</strong> <%= shapefile.area %></p>
+      <p><strong>Plot ID:</strong> <%= shapefile.plotID %></p>
+      <p><strong>Status:</strong> <%= shapefile.status ? "Occupied" : "Vacant" %></p>
+      <p><strong>In Progress:</strong> <%= shapefile.isProgress ? "Yes" : "No" %></p>
+
+      <% if (shapefile.Parcel) { %>
+        <div class="nested-section">
+          <h3>Parcel Type: <%= shapefile.Parcel.type %></h3>
+
+          <% if (shapefile.Parcel.Park) { %>
+            <div class="nested-section">
+              <h3> Park Details</h3>
+              <p><strong>Name:</strong> <%= shapefile.Parcel.Park.name %></p>
+              <p><strong>Area Size:</strong> <%= shapefile.Parcel.Park.areaSize %></p>
+              <p><strong>Facilities:</strong> <%= shapefile.Parcel.Park.facilities %></p>
+              <% if (shapefile.Parcel.Park.photos) { %>
+                <div class="photo-gallery">
+                  <% shapefile.Parcel.Park.photos.forEach(photo => { %>
+                    <img src="<%= photo %>" alt="Park Photo">
+                  <% }) %>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
+
+          <% if (shapefile.Parcel.Street) { %>
+            <div class="nested-section">
+              <h3> Street Details</h3>
+              <p><strong>Type:</strong> <%= shapefile.Parcel.Street.streetType %></p>
+              <p><strong>Material:</strong> <%= shapefile.Parcel.Street.materialUsed %></p>
+              <p><strong>Paved:</strong> <%= shapefile.Parcel.Street.paved ? "Yes" : "No" %></p>
+              <p><strong>Notes:</strong> <%= shapefile.Parcel.Street.notes %></p>
+              <% if (shapefile.Parcel.Street.photos) { %>
+                <div class="photo-gallery">
+                  <% shapefile.Parcel.Street.photos.forEach(photo => { %>
+                    <img src="<%= photo %>" alt="Street Photo">
+                  <% }) %>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
+
+          <% if (shapefile.Parcel.Plot) { %>
+            <div class="nested-section">
+              <h3> Plot Details</h3>
+              <p><strong>Constructed:</strong> <%= shapefile.Parcel.Plot.isConstructed ? "Yes" : "No" %></p>
+
+              <% if (shapefile.Parcel.Plot.photos) { %>
+                <div class="photo-gallery">
+                  <% shapefile.Parcel.Plot.photos.forEach(photo => { %>
+                    <img src="<%= photo %>" alt="Plot Photo">
+                  <% }) %>
+                </div>
+              <% } %>
+
+              <% shapefile.Parcel.Plot.Buildings.forEach((building, bIndex) => { %>
+                <div class="nested-section">
+                  <h6>🏠 Building Identifier : <%= building.identifier %></h6>
+                  <p><strong>Owner CID:</strong> <%= building.ownerCid %></p>
+                  <p><strong>Contact:</strong> <%= building.contact %></p>
+                  <p><strong>Year Built:</strong> <%= building.yearBuilt %></p>
+                  <p><strong>Storeys:</strong> <%= building.storeys %></p>
+                  <p><strong>Structure Type:</strong> <%= building.structureType %></p>
+                  <p><strong>Retrofit Ready:</strong> <%= building.retrofitReady ? "Yes" : "No" %></p>
+
+                  <% if (building.facadePhotos) { %>
+                    <div class="photo-gallery">
+                      <% building.facadePhotos.forEach(photo => { %>
+                        <img src="<%= photo %>" alt="Facade Photo">
+                      <% }) %>
+                    </div>
+                  <% } %>
+
+                  <% building.Units.forEach((unit, uIndex) => { %>
+                    <div class="nested-section">
+                      <p><strong>Unit <%= uIndex + 1 %>:</strong> Floor: <%= unit.floor %>, Area: <%= unit.area %></p>
+                      <p><strong>Use Type:</strong> <%= unit.useType %>, Usage: <%= unit.usage %></p>
+                      <p><strong>Tenant:</strong> <%= unit.tenantName %> from <%= unit.tenantOrigin %> (<%= unit.tenancyYears %> years)</p>
+                      <p><strong>Rent:</strong> Nu. <%= unit.rent %></p>
+                      <p><strong>Rooms:</strong> Bedrooms: <%= unit.bedrooms %>, Halls: <%= unit.halls %>, Kitchens: <%= unit.kitchens %>, Bathrooms: <%= unit.bathrooms %>, Balcony: <%= unit.balcony %></p>
+
+                      <% if (unit.interiorPhotos) { %>
+                        <div class="photo-gallery">
+                          <% unit.interiorPhotos.forEach(photo => { %>
+                            <img src="<%= photo %>" alt="Interior Photo">
+                          <% }) %>
+                        </div>
+                      <% } %>
+
+                      <% if (unit.signboardPhotos) { %>
+                        <div class="photo-gallery">
+                          <% unit.signboardPhotos.forEach(photo => { %>
+                            <img src="<%= photo %>" alt="Signboard Photo">
+                          <% }) %>
+                        </div>
+                      <% } %>
+                    </div>
+                  <% }) %>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  <% }) %>
+
+</body>
+</html>

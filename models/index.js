@@ -24,7 +24,7 @@ const models = {
 };
 
 // Define associations here - **both directions**
-
+Shapefile.hasOne(Parcel, { foreignKey: 'featureId' });
 Parcel.hasOne(Park, { foreignKey: 'parcelId' });
 Park.belongsTo(Parcel, { foreignKey: 'parcelId' });
 

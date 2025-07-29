@@ -8,6 +8,7 @@ const { sequelize, Survey } = require('./models');
 /// Routes Identififer
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const userRoute = require('./routes/userRoute');
 const surveyRoutes = require('./routes/surveyRoutes');
 const shapefileRoutes = require('./routes/surveyShapefileRoutes');
 const surveyControlRoutes = require('./routes/surveyControlRoutes');
@@ -62,6 +63,11 @@ app.use('/admin/surveys/shapefile', authMiddleware, roleMiddleware(['admin']), s
 
 // Editor Routes
 app.use('/editor/surveys', authMiddleware, roleMiddleware(['editor']), surveyControlRoutes);
+
+
+// Users Routes
+app.use('/users/surveys', authMiddleware, roleMiddleware(['user']), userRoute);
+
 
 // Admin dashboard
 app.get('/admin', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
