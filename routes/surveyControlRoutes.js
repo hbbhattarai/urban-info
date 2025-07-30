@@ -332,8 +332,7 @@ router.get('/:surveyId/survey/parcel/:parcelId/building/:plotId', async (req, re
     let parcel = await Parcel.findOne({ where: { id: parcelId } });
     let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
     let status = 'on';
-    console.log(plot.isConstructed);
-    if (plot.isConstructed === False) {
+    if (plot.isConstructed === false) {
       if (shapefile) {
         shapefile.status = status === 'on';
         shapefile.isProgress = status === 'off';
