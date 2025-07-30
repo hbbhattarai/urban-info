@@ -328,6 +328,18 @@ router.get('/:surveyId/survey/parcel/:parcelId/building/:plotId', async (req, re
   const { surveyId, parcelId, plotId } = req.params;
 
   try {
+    const plot = await Plot.findOne({ where: { id: plotId } });
+    let parcel = await Parcel.findOne({ where: { id: parcelId } });
+    let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
+    let status = 'on';
+    console.log(plot.isConstructed);
+    if (plot.isConstructed === False) {
+      if (shapefile) {
+        shapefile.status = status === 'on';
+        shapefile.isProgress = status === 'off';
+        await shapefile.save();
+      }
+    }
     const building = await Building.findAll({ where: { plotId } });
     const editBuilding = null;
     res.render('surveyor/buildingDetails', { surveyId, parcelId, plotId, building, editBuilding });
@@ -561,7 +573,7 @@ router.post(
       }
 
       const unitData = {};
-     
+
       Object.assign(unitData, {
         buildingId,
         useType,
@@ -637,7 +649,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
     let parcel = await Parcel.findOne({ where: { id: parcelId } });
     let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
     if (shapefile) {
-      shapefile.isProgress =  status === 'off';
+      shapefile.isProgress = status === 'off';
       await shapefile.save();
     }
     res.redirect(`/editor/surveys/view/${surveyId}`);
