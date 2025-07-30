@@ -287,8 +287,13 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
       }
 
       if (shapefile) {
-        shapefile.status = status === 'on';
-        shapefile.isProgress = status === 'on';
+        if (status === 'on') {
+          shapefile.status = status === 'on';
+          shapefile.isProgress = status === 'on';
+        }else{
+          shapefile.status = status === 'on';
+          shapefile.isProgress = status === 'off';
+        }
         await shapefile.save();
       }
 
@@ -561,7 +566,7 @@ router.post(
       }
 
       const unitData = {};
-     
+
       Object.assign(unitData, {
         buildingId,
         useType,
@@ -637,7 +642,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot/:plotId/building/:buildingI
     let parcel = await Parcel.findOne({ where: { id: parcelId } });
     let shapefile = await Shapefile.findOne({ where: { id: parcel.featureId } });
     if (shapefile) {
-      shapefile.isProgress =  status === 'off';
+      shapefile.isProgress = status === 'off';
       await shapefile.save();
     }
     res.redirect(`/editor/surveys/view/${surveyId}`);
