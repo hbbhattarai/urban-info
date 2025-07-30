@@ -287,7 +287,7 @@ router.post('/:surveyId/survey/parcel/:parcelId/plot',
       }
 
       if (shapefile) {
-        if (status === 'on') {
+        if (isConstructed === 'on') {
           shapefile.status = status === 'on';
           shapefile.isProgress = status === 'on';
         }else{
